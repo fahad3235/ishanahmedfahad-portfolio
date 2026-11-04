@@ -1868,40 +1868,6 @@ body.frame-tags-on .chapter {
   opacity: 0;
 }
 
-@media (max-width: 720px) {
-  .telemetry,
-  .counter,
-  .luffy-hud {
-    display: none;
-  }
-  .top {
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  }
-  .rail {
-    right: 4px;
-  }
-  .chapter {
-    max-width: calc(100% - var(--gutter) * 2 - 20px);
-  }
-  .intro,
-  .finale {
-    padding-bottom: calc(var(--gutter) * 1.1 + 44px);
-  }
-  .chapter,
-  .wl {
-    bottom: calc(var(--gutter) * 1.1 + 44px);
-  }
-  .scroll-cue {
-    display: none;
-  }
-  .ft-bar {
-    grid-template-columns: 1fr;
-  }
-  .ft-r {
-    justify-items: start;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1946,6 +1912,10 @@ body.frame-tags-on .chapter {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+}
+
+.skills-label-mobile {
+  display: none;
 }
 
 .skills-hud-btn:hover {
@@ -2284,4 +2254,544 @@ body.frame-tags-on .chapter {
   font-size: 10px;
   color: var(--ink-3);
   margin-top: 4px;
+}
+
+
+/* ========================================================
+   MOBILE PHONE UX & TOUCH REVOLUTION (<= 768px & <= 440px)
+   Apple HIG & Material 3 Touch-First Design Patterns
+   ======================================================== */
+
+@media (max-width: 768px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  /* 1. Viewport & Safe Areas */
+  html, body {
+    overflow-x: hidden;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* 2. Top Navigation Bar */
+  .top {
+    padding: max(10px, env(safe-area-inset-top)) max(14px, env(safe-area-inset-right)) 10px max(14px, env(safe-area-inset-left));
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    box-sizing: border-box;
+    gap: 8px;
+    z-index: 50;
+  }
+
+  .mark {
+    gap: 8px;
+    min-width: 0;
+    flex-shrink: 1;
+  }
+
+  .mark-monogram {
+    font-size: 10px;
+  }
+
+  .mark-text-wrap {
+    min-width: 0;
+  }
+
+  .mark-word {
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .mark-sub {
+    font-size: 8.5px;
+    opacity: 0.75;
+    letter-spacing: 0.02em;
+    white-space: nowrap;
+  }
+
+  .top-r {
+    gap: 6px;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+
+  .skills-hud-btn {
+    padding: 6px 11px;
+    font-size: 10.5px;
+    min-height: 36px;
+    gap: 5px;
+    border-radius: 999px;
+  }
+
+  .sound-btn {
+    padding: 6px 10px;
+    font-size: 10.5px;
+    min-height: 36px;
+    border-radius: 999px;
+  }
+
+  .index-btn {
+    padding: 6px 11px;
+    font-size: 10.5px;
+    min-height: 36px;
+    border-radius: 999px;
+  }
+
+  /* 3. Mobile Chapter Floating Dock in Thumb Zone */
+  .luffy-hud {
+    position: fixed !important;
+    top: auto !important;
+    bottom: max(12px, env(safe-area-inset-bottom)) !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 4px !important;
+    padding: 4px 6px !important;
+    background: rgba(10, 11, 16, 0.88) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    backdrop-filter: blur(20px) !important;
+    border: 1px solid rgba(242, 238, 231, 0.16) !important;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.75), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+    border-radius: 999px !important;
+    max-width: calc(100vw - 20px) !important;
+    overflow-x: auto !important;
+    scrollbar-width: none !important;
+    -webkit-overflow-scrolling: touch !important;
+    z-index: 55 !important;
+  }
+
+  .luffy-hud::-webkit-scrollbar {
+    display: none;
+  }
+
+  .luffy-pill {
+    font-size: 10px !important;
+    padding: 6px 10px !important;
+    min-height: 34px !important;
+    white-space: nowrap !important;
+    border-radius: 999px !important;
+    color: var(--ink-2) !important;
+  }
+
+  .luffy-pill.active {
+    background: rgba(255, 58, 38, 0.25) !important;
+    color: #fff !important;
+    box-shadow: 0 0 12px rgba(255, 58, 38, 0.4) !important;
+    border: 1px solid rgba(255, 58, 38, 0.5) !important;
+  }
+
+  .luffy-pill.nika-active {
+    background: rgba(200, 182, 255, 0.28) !important;
+    box-shadow: inset 0 0 0 1px var(--luffy-straw), 0 0 14px rgba(245, 184, 46, 0.4) !important;
+    color: #fff !important;
+  }
+
+  /* 4. Narrative Chapter Cards & High-Contrast Vignettes */
+  .chapter,
+  .finale {
+    left: max(14px, env(safe-area-inset-left)) !important;
+    right: max(14px, env(safe-area-inset-right)) !important;
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + 54px) !important;
+    max-width: calc(100vw - 28px) !important;
+    box-sizing: border-box !important;
+    padding: 16px 18px !important;
+    border-radius: 20px !important;
+    background: rgba(8, 9, 14, 0.65) !important;
+    -webkit-backdrop-filter: blur(16px) !important;
+    backdrop-filter: blur(16px) !important;
+    border: 1px solid rgba(242, 238, 231, 0.12) !important;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65) !important;
+    transition: opacity 0.4s var(--ease), transform 0.4s var(--ease) !important;
+  }
+
+  .intro {
+    left: max(14px, env(safe-area-inset-left)) !important;
+    right: max(14px, env(safe-area-inset-right)) !important;
+    bottom: calc(max(12px, env(safe-area-inset-bottom)) + 54px) !important;
+    max-width: calc(100vw - 28px) !important;
+    box-sizing: border-box !important;
+    padding: 16px 18px !important;
+    border-radius: 20px !important;
+    background: rgba(8, 9, 14, 0.55) !important;
+    -webkit-backdrop-filter: blur(14px) !important;
+    backdrop-filter: blur(14px) !important;
+    border: 1px solid rgba(242, 238, 231, 0.1) !important;
+  }
+
+  .intro-title {
+    font-size: clamp(24px, 6.8vw, 36px) !important;
+    line-height: 1.12 !important;
+    letter-spacing: -0.03em !important;
+    margin: 8px 0 !important;
+  }
+
+  .intro-kicker {
+    font-size: 10px !important;
+    letter-spacing: 0.05em !important;
+  }
+
+  .intro-now {
+    font-size: 12px !important;
+    line-height: 1.45 !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+  }
+
+  .ch-meta {
+    gap: 8px !important;
+    margin-bottom: 6px !important;
+    font-size: 11px !important;
+  }
+
+  .ch-rule {
+    width: 32px !important;
+  }
+
+  .ch-title {
+    font-size: clamp(24px, 7.2vw, 38px) !important;
+    line-height: 1.05 !important;
+    letter-spacing: -0.03em !important;
+    max-width: 100% !important;
+    padding: 2px 0 4px !important;
+  }
+
+  .ch-line {
+    font-size: clamp(13.5px, 3.6vw, 15.5px) !important;
+    line-height: 1.42 !important;
+    margin-top: 6px !important;
+    max-width: 100% !important;
+  }
+
+  .ch-stats {
+    gap: 12px 20px !important;
+    margin-top: 14px !important;
+  }
+
+  .ch-stats dt {
+    font-size: clamp(22px, 6vw, 32px) !important;
+  }
+
+  .ch-stats dd {
+    font-size: 11px !important;
+  }
+
+  .finale-title {
+    font-size: clamp(24px, 7.2vw, 38px) !important;
+    line-height: 1.1 !important;
+  }
+
+  .basic,
+  .rail,
+  .counter,
+  .telemetry,
+  .scroll-cue {
+    display: none !important;
+  }
+
+  /* 5. Index Menu Sheet */
+  .index {
+    position: fixed !important;
+    inset: 0 !important;
+    top: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    background: rgba(3, 4, 8, 0.88) !important;
+    -webkit-backdrop-filter: blur(24px) !important;
+    backdrop-filter: blur(24px) !important;
+    z-index: 85 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-end !important;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transform: translateY(20px) !important;
+    transition: opacity 0.35s var(--ease), transform 0.35s var(--ease) !important;
+  }
+
+  .index.open {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+    transform: translateY(0) !important;
+  }
+
+  .index ol {
+    background: rgba(14, 16, 24, 0.98) !important;
+    border: 1px solid var(--line) !important;
+    border-radius: 20px !important;
+    padding: 16px !important;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.9) !important;
+    gap: 6px !important;
+    text-align: left !important;
+    list-style: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    max-height: 80vh !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .index a {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 14px !important;
+    font-size: 14px !important;
+    color: var(--ink) !important;
+    background: rgba(255, 255, 255, 0.03) !important;
+    border-radius: 10px !important;
+    border: 1px solid rgba(255, 255, 255, 0.04) !important;
+    min-height: 44px !important;
+    pointer-events: auto !important;
+    opacity: 0.85 !important;
+    text-decoration: none !important;
+  }
+
+  .index a:active,
+  .index a.on {
+    background: color-mix(in srgb, var(--accent) 20%, transparent) !important;
+    border-color: var(--accent-border) !important;
+    opacity: 1 !important;
+  }
+
+  .index a small {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: var(--accent) !important;
+  }
+
+  /* 6. Work Case Study Modal */
+  .work-modal {
+    padding: 0 !important;
+    align-items: flex-end !important;
+  }
+
+  .wm-glass {
+    width: 100% !important;
+    max-height: 90dvh !important;
+    border-radius: 24px 24px 0 0 !important;
+    border-bottom: none !important;
+    margin: 0 !important;
+    overflow-y: auto !important;
+    -webkit-overflow-scrolling: touch !important;
+  }
+
+  .wm-head {
+    padding: 16px 20px 14px !important;
+    position: relative !important;
+  }
+
+  .wm-head::before {
+    content: "" !important;
+    display: block !important;
+    width: 38px !important;
+    height: 4px !important;
+    border-radius: 2px !important;
+    background: rgba(255, 255, 255, 0.25) !important;
+    margin: 0 auto 12px !important;
+  }
+
+  .wm-close {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    border-radius: 50% !important;
+    font-size: 18px !important;
+    display: grid !important;
+    place-items: center !important;
+  }
+
+  .wm-title {
+    font-size: 22px !important;
+    line-height: 1.15 !important;
+  }
+
+  .wm-award-badge {
+    font-size: 11px !important;
+    padding: 4px 12px !important;
+    line-height: 1.3 !important;
+  }
+
+  .wm-stage {
+    height: 180px !important;
+    margin: 0 20px !important;
+    border-radius: 12px !important;
+  }
+
+  .wm-actions {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 8px !important;
+    margin-top: 14px !important;
+  }
+
+  .wm-action-btn {
+    width: 100% !important;
+    min-height: 44px !important;
+    justify-content: center !important;
+    font-size: 13px !important;
+    border-radius: 12px !important;
+    box-sizing: border-box !important;
+  }
+
+  .wm-foot {
+    padding: 14px 20px max(18px, env(safe-area-inset-bottom)) !important;
+  }
+
+  /* 7. Technical Skills Arsenal Drawer */
+  .skills-modal {
+    padding: 0 !important;
+  }
+
+  .skills-drawer {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    height: 100dvh !important;
+    border-radius: 0 !important;
+    border: none !important;
+  }
+
+  .skills-head {
+    padding: max(16px, env(safe-area-inset-top)) 20px 14px !important;
+  }
+
+  .skills-title {
+    font-size: 20px !important;
+  }
+
+  .skills-close {
+    width: 44px !important;
+    height: 44px !important;
+    min-width: 44px !important;
+    font-size: 18px !important;
+  }
+
+  .skills-body {
+    padding: 14px 20px !important;
+  }
+
+  .skills-grid {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .skill-category-card {
+    padding: 14px 16px !important;
+  }
+
+  .skills-foot {
+    padding: 14px 20px max(18px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .skills-stats {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
+  }
+
+  .ss-val {
+    font-size: 18px !important;
+  }
+
+  /* 8. Footer Section */
+  .footer {
+    padding-bottom: max(24px, env(safe-area-inset-bottom)) !important;
+  }
+
+  .ft-bar {
+    grid-template-columns: 1fr !important;
+    padding: 32px 18px max(24px, env(safe-area-inset-bottom)) !important;
+    gap: 24px !important;
+  }
+
+  .ft-r {
+    justify-items: start !important;
+  }
+
+  .ft-title {
+    font-size: clamp(22px, 6.5vw, 32px) !important;
+    line-height: 1.15 !important;
+  }
+
+  .ft-mail {
+    font-size: 16px !important;
+    word-break: break-all !important;
+  }
+
+  .ft-links {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  .ft-links a {
+    min-height: 44px !important;
+    display: flex !important;
+    align-items: center !important;
+  }
+
+  .ft-again {
+    min-height: 44px !important;
+    padding: 10px 20px !important;
+  }
+
+  /* 9. Gate / Loader Screen */
+  .loader-inner {
+    padding: 0 20px !important;
+    width: 100% !important;
+    max-width: 340px !important;
+    box-sizing: border-box !important;
+  }
+
+  .loader-enter {
+    display: flex !important;
+    flex-direction: column !important;
+    width: 100% !important;
+    gap: 10px !important;
+  }
+
+  .enter-btn {
+    width: 100% !important;
+    min-height: 48px !important;
+    font-size: 13px !important;
+    border-radius: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+}
+
+@media (max-width: 440px) {
+  .mark-sub {
+    display: none !important;
+  }
+
+  .skills-label-full {
+    display: none !important;
+  }
+
+  .skills-label-mobile {
+    display: inline !important;
+  }
+
+  .skills-hud-btn {
+    padding: 6px 9px !important;
+  }
+
+  .luffy-pill {
+    padding: 5px 8px !important;
+    font-size: 9.5px !important;
+  }
 }

@@ -9,10 +9,19 @@ function initLuffyHudControls() {
   const getMaxScroll = () =>
     Math.max(1, (scrollEl ? scrollEl.offsetHeight : document.body.scrollHeight) - window.innerHeight);
 
+  const triggerHaptic = (ms = 12) => {
+    try {
+      if (typeof navigator !== "undefined" && navigator.vibrate) {
+        navigator.vibrate(ms);
+      }
+    } catch (_) {}
+  };
+
   // 1. Quick-Jump buttons to Luffy chapters (Origin, Memory, Egg Awakening, Spline Flight)
   jumpButtons.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
+      triggerHaptic(15);
       const targetRatio = parseFloat(btn.dataset.luffyJump || "0");
       const loader = document.getElementById("loader");
       if (loader && !loader.classList.contains("done")) {
@@ -26,7 +35,8 @@ function initLuffyHudControls() {
     });
   });
 
-  // Update active state on scroll
+  // Update active state on scroll & auto-center in mobile scrubber dock
+  let lastActiveBtn = null;
   const syncActivePill = () => {
     const ratio = window.scrollY / getMaxScroll();
     let bestBtn = jumpButtons[0];
@@ -40,6 +50,13 @@ function initLuffyHudControls() {
       }
     }
     jumpButtons.forEach((btn) => btn.classList.toggle("active", btn === bestBtn));
+
+    if (bestBtn !== lastActiveBtn) {
+      lastActiveBtn = bestBtn;
+      if (bestBtn && bestBtn.scrollIntoView && window.innerWidth <= 768) {
+        bestBtn.scrollIntoView({ behavior: "smooth", inline: "center", block: "nearest" });
+      }
+    }
   };
   window.addEventListener("scroll", syncActivePill, { passive: true });
   syncActivePill();
@@ -50,6 +67,7 @@ function initLuffyHudControls() {
     nikaBtn.addEventListener("click", (e) => {
       e.stopPropagation();
       nikaOn = !nikaOn;
+      triggerHaptic(25);
       nikaBtn.setAttribute("aria-pressed", String(nikaOn));
       nikaBtn.classList.toggle("nika-active", nikaOn);
       nikaBtn.textContent = nikaOn ? "Gear 5 Nika: ON" : "Straw Hat Base";
@@ -75,6 +93,7 @@ function initLuffyHudControls() {
   // 3. Footer Back to Origin button
   if (ftTopBtn) {
     ftTopBtn.addEventListener("click", () => {
+      triggerHaptic(10);
       window.scrollTo({ top: 0, behavior: "smooth" });
     });
   }
@@ -85,6 +104,7 @@ function initLuffyHudControls() {
   if (skillsBtn && skillsModal) {
     const openSkills = (e) => {
       if (e) e.stopPropagation();
+      triggerHaptic(15);
       skillsModal.classList.add("open");
       skillsModal.setAttribute("aria-hidden", "false");
       document.documentElement.classList.add("modal-open");
@@ -92,6 +112,7 @@ function initLuffyHudControls() {
     };
     const closeSkills = (e) => {
       if (e) e.stopPropagation();
+      triggerHaptic(10);
       skillsModal.classList.remove("open");
       skillsModal.setAttribute("aria-hidden", "true");
       document.documentElement.classList.remove("modal-open");
@@ -101,7 +122,7 @@ function initLuffyHudControls() {
     skillsBtn.addEventListener("click", openSkills);
 
     skillsModal.addEventListener("click", (e) => {
-      if (e.target.closest("[data-close-skills]")) {
+      if (e.target.closest("[data-close-skills]") || e.target === skillsModal) {
         closeSkills(e);
       }
     });
@@ -109,6 +130,34 @@ function initLuffyHudControls() {
     window.addEventListener("keydown", (e) => {
       if (e.key === "Escape" && skillsModal.classList.contains("open")) {
         closeSkills(e);
+      }
+    });
+  }
+
+  // 5. Mobile Index Drawer Backdrop Dismiss
+  const indexNav = document.getElementById("index");
+  if (indexNav) {
+    indexNav.addEventListener("click", (e) => {
+      if (e.target === indexNav) {
+        triggerHaptic(10);
+        indexNav.classList.remove("open");
+        indexNav.setAttribute("aria-hidden", "true");
+        const indexBtn = document.getElementById("index-btn");
+        if (indexBtn) indexBtn.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
+  // 6. Mobile Safe Work Modal Backdrop Dismiss
+  const workModal = document.getElementById("work-modal");
+  if (workModal) {
+    workModal.addEventListener("click", (e) => {
+      if (e.target === workModal || e.target.classList.contains("wm-backdrop")) {
+        triggerHaptic(10);
+        workModal.classList.remove("open");
+        workModal.setAttribute("aria-hidden", "true");
+        document.documentElement.classList.remove("modal-open");
+        window.dispatchEvent(new CustomEvent("sfx", { detail: "close" }));
       }
     });
   }
