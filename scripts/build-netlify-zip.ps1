@@ -10,8 +10,10 @@ if (Test-Path $ZipPath) {
     Remove-Item -Path $ZipPath -Force
 }
 
-# Ensure netlify.toml is also copied into dist
-Copy-Item -Path "netlify.toml" -Destination (Join-Path $DistPath "netlify.toml") -Force -ErrorAction SilentlyContinue
+# Remove netlify.toml from dist if present (Drop deployments are pre-built static assets and must NOT contain build commands)
+if (Test-Path (Join-Path $DistPath "netlify.toml")) {
+    Remove-Item -Path (Join-Path $DistPath "netlify.toml") -Force -ErrorAction SilentlyContinue
+}
 
 $zipStream = [System.IO.File]::Open($ZipPath, [System.IO.FileMode]::CreateNew)
 $archive = New-Object System.IO.Compression.ZipArchive($zipStream, [System.IO.Compression.ZipArchiveMode]::Create)
@@ -40,3 +42,16 @@ $zipStream.Dispose()
 
 $zipItem = Get-Item $ZipPath
 Write-Host ("Successfully generated " + $ZipPath + " (" + [math]::Round($zipItem.Length / 1MB, 2) + " MB, " + $files.Count + " files)")
+
+# Update Desktop and Downloads copies
+$desktop = "$env:USERPROFILE\OneDrive\Desktop"
+$downloads = "$env:USERPROFILE\Downloads"
+if (Test-Path $desktop) {
+    Copy-Item $ZipPath (Join-Path $desktop $ZipPath) -Force
+    Write-Host "Updated Desktop copy: $desktop\$ZipPath"
+}
+if (Test-Path $downloads) {
+    Copy-Item $ZipPath (Join-Path $downloads $ZipPath) -Force
+    Write-Host "Updated Downloads copy: $downloads\$ZipPath"
+}
+
