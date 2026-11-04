@@ -70,7 +70,14 @@ function initLuffyHudControls() {
       triggerHaptic(25);
       nikaBtn.setAttribute("aria-pressed", String(nikaOn));
       nikaBtn.classList.toggle("nika-active", nikaOn);
-      nikaBtn.textContent = nikaOn ? "Gear 5 Nika: ON" : "Straw Hat Base";
+      const labelFull = document.getElementById("nika-label-full");
+      const labelMob = document.getElementById("nika-label-mob");
+      if (labelFull && labelMob) {
+        labelFull.textContent = nikaOn ? "Gear 5 Nika: ON" : "Straw Hat Base";
+        labelMob.textContent = nikaOn ? "⚡ Nika" : "👒 Base";
+      } else {
+        nikaBtn.textContent = nikaOn ? "Gear 5 Nika: ON" : "Straw Hat Base";
+      }
 
       const three = window.__three;
       if (three && three.hero && three.hero.figure && three.hero.figure.uniforms.uNika) {
@@ -134,11 +141,11 @@ function initLuffyHudControls() {
     });
   }
 
-  // 5. Mobile Index Drawer Backdrop Dismiss
+  // 5. Mobile Index Drawer Dismiss
   const indexNav = document.getElementById("index");
   if (indexNav) {
     indexNav.addEventListener("click", (e) => {
-      if (e.target === indexNav) {
+      if (e.target === indexNav || e.target.closest("[data-close-index]")) {
         triggerHaptic(10);
         indexNav.classList.remove("open");
         indexNav.setAttribute("aria-hidden", "true");
@@ -148,11 +155,11 @@ function initLuffyHudControls() {
     });
   }
 
-  // 6. Mobile Safe Work Modal Backdrop Dismiss
+  // 6. Mobile Safe Work Modal Backdrop & Close Dismiss
   const workModal = document.getElementById("work-modal");
   if (workModal) {
     workModal.addEventListener("click", (e) => {
-      if (e.target === workModal || e.target.classList.contains("wm-backdrop")) {
+      if (e.target === workModal || e.target.classList.contains("wm-backdrop") || e.target.closest("[data-close]")) {
         triggerHaptic(10);
         workModal.classList.remove("open");
         workModal.setAttribute("aria-hidden", "true");

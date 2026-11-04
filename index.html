@@ -115,7 +115,9 @@
           data-luffy-jump="0"
           title="Chapter 01: The Origin (3D Luffy &amp; Sunken Ghost Galleon)"
         >
-          <span class="luffy-dot"></span>01 Origin
+          <span class="luffy-dot"></span>
+          <span class="hud-label-full">01 Origin</span>
+          <span class="hud-label-mob">01</span>
         </button>
         <button
           class="luffy-pill"
@@ -123,7 +125,8 @@
           data-luffy-jump="0.16"
           title="Chapter 02: The Memory (3D Luffy &amp; Devil Fruit)"
         >
-          02 Memory
+          <span class="hud-label-full">02 Memory</span>
+          <span class="hud-label-mob">02</span>
         </button>
         <button
           class="luffy-pill"
@@ -131,7 +134,8 @@
           data-luffy-jump="0.545"
           title="Chapter 04: Crystal Egg &amp; Luffy Gear 5 Sun God Awakening"
         >
-          04 Egg Awakening
+          <span class="hud-label-full">04 Egg Awakening</span>
+          <span class="hud-label-mob">04</span>
         </button>
         <button
           class="luffy-pill"
@@ -139,7 +143,8 @@
           data-luffy-jump="0.72"
           title="Chapters 05 to 06: 3rd-Person Luffy Spline Flight"
         >
-          05-06 Luffy Flight
+          <span class="hud-label-full">05-06 Flight</span>
+          <span class="hud-label-mob">05</span>
         </button>
         <button
           class="luffy-pill nika-active"
@@ -148,7 +153,8 @@
           aria-pressed="true"
           title="Toggle Gear 5 Nika Conqueror's Haki Overdrive"
         >
-          Gear 5 Nika: ON
+          <span class="hud-label-full" id="nika-label-full">Gear 5 Nika: ON</span>
+          <span class="hud-label-mob" id="nika-label-mob">⚡ Nika</span>
         </button>
       </nav>
 
@@ -238,8 +244,14 @@
         </span>
       </a>
 
-      <nav class="index open" id="index" aria-hidden="false">
-        <ol id="index-list"></ol>
+      <nav class="index" id="index" aria-hidden="true">
+        <div class="index-sheet-inner">
+          <div class="index-sheet-head">
+            <span class="index-sheet-title mono">Voyage Chapters</span>
+            <button class="index-sheet-close mono" type="button" data-close-index aria-label="Close index">✕</button>
+          </div>
+          <ol id="index-list"></ol>
+        </div>
       </nav>
 
       
