@@ -1,6 +1,38 @@
+# Dependencies
 node_modules/
-dist/
-scratch/
-.system_generated/
-*.log
+.pnp
+.pnp.js
 
+# Production build outputs
+dist/
+build/
+
+# Private task files & prompt specifications
+task_prompt.txt
+*.prompt
+*.private
+
+# Archives & ZIP bundles
+*.zip
+*.tar.gz
+*.rar
+
+# Scratch scripts & internal test artifacts
+scratch/
+test-*/
+.system_generated/
+
+# Logs & debugging
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment & credentials
+.env
+.env.local
+.env.*.local
+
+# OS system files
+.DS_Store
+Thumbs.db

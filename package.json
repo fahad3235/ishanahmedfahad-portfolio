@@ -1,12 +1,11 @@
 {
-  "name": "portfolio-experience",
+  "name": "ishanahmedfahad-portfolio",
   "version": "1.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "postbuild": "powershell -ExecutionPolicy Bypass -File scripts/build-netlify-zip.ps1",
     "preview": "vite preview"
   },
   "dependencies": {
