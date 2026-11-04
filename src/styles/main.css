@@ -162,12 +162,19 @@ body {
   overflow-x: clip;
 }
 
-@media (pointer: coarse) {
-  body {
-    cursor: auto;
+@media (pointer: coarse) and (hover: none) {
+  body,
+  button,
+  a,
+  .enter-btn,
+  .luffy-pill,
+  .skills-hud-btn,
+  .sound-btn,
+  .index-btn {
+    cursor: auto !important;
   }
   #cursor {
-    display: none;
+    display: none !important;
   }
 }
 
@@ -1069,7 +1076,7 @@ html.js #loader.ready .loader-enter {
 .enter-btn {
   font: inherit;
   color: var(--ink);
-  cursor: pointer;
+  cursor: none;
   background: color-mix(in srgb, var(--ink) 5%, transparent);
   border: 1px solid var(--line);
   border-radius: 999px;
@@ -1095,12 +1102,12 @@ html.js #loader.ready .loader-enter {
 }
 
 #cursor {
-  z-index: 1000;
-  pointer-events: none;
+  z-index: 1000000 !important;
+  pointer-events: none !important;
   transition: opacity 0.25s var(--ease);
-  position: fixed;
-  top: 0;
-  left: 0;
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
 }
 
 #cursor.away {
@@ -2288,10 +2295,6 @@ body.frame-tags-on .chapter {
   html, body {
     overflow-x: hidden;
     -webkit-tap-highlight-color: transparent;
-  }
-
-  #cursor {
-    display: none !important;
   }
 
   /* 2. Seamless Top Navigation Bar (Zero Overflow) */
