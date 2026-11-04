@@ -1,0 +1,838 @@
+<!doctype html>
+<html lang="en" class="js gate">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Ishan Ahmed Fahad · Web Developer &amp; AI Systems Engineer | Grand Line Abyss</title>
+    <meta
+      name="description"
+      content="Ishan Ahmed Fahad — Web Developer &amp; AI Systems Engineer, Department of CIS @ Daffodil International University. Lead Developer at Team Probaho (UPAY Sentinel AI - 2nd of 132 Teams National Runner-Up, SightGuide, Probaho Remit). 3D WebGL narrative portfolio."
+    />
+    <meta name="theme-color" content="#030203" />
+    <style id="critical-head-styles">
+      :root {
+        --bg: #030203;
+        --ink: #f2eee7;
+        --ink-2: #f2eee79e;
+        --ink-3: #f2eee747;
+        --line: #f2eee72e;
+        --accent: #ff3a26;
+        --f-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+        --gutter: clamp(16px, 3.2vw, 48px);
+      }
+      *, *::before, *::after {
+        box-sizing: border-box;
+      }
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #030203;
+        color: #f2eee7;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+        overflow-x: hidden;
+      }
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+      button {
+        font-family: inherit;
+        background: none;
+        border: none;
+        color: inherit;
+        cursor: pointer;
+      }
+      #gl {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 0;
+        pointer-events: none;
+      }
+      #loader.ready .loader-enter {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: none !important;
+      }
+    </style>
+    <script>
+      window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+          const l = document.getElementById('loader');
+          if (l && !l.classList.contains('ready') && !l.classList.contains('done')) {
+            l.classList.add('ready');
+          }
+        }, 3000);
+      });
+    </script>
+    <link rel="stylesheet" href="./src/styles/main.css" />
+  </head>
+  <body>
+    <canvas id="gl" aria-hidden="true"></canvas>
+
+    <div id="scroll" aria-hidden="true"></div>
+
+    <footer id="footer" class="footer">
+      <div class="ft-bar">
+        <div class="ft-l">
+          <div class="ft-kick mono">
+            <span class="ft-dot"></span>Available for engineering roles &amp; high-impact AI ventures
+          </div>
+          <h3 class="ft-title serif">
+            Ready to engineer high-velocity AI platforms &amp; 3D WebGL experiences.
+            <span class="em-muted">Let’s connect.</span>
+          </h3>
+        </div>
+        <div class="ft-r">
+          <a class="ft-mail" href="mailto:fahad3235@gmail.com"
+            >fahad3235@gmail.com <span>/</span></a
+          >
+          <div class="ft-links mono">
+            <a
+              href="https://github.com/fahad3235"
+              target="_blank"
+              rel="noopener"
+              >GitHub / fahad3235</a
+            >
+            <a
+              href="https://github.com/fahad3235/upay-ai"
+              target="_blank"
+              rel="noopener"
+              >UPAY Sentinel AI</a
+            >
+            <a
+              href="https://fahad3235.github.io/sightguide/"
+              target="_blank"
+              rel="noopener"
+              >SightGuide Live</a
+            >
+            <a
+              href="https://fahad3235.github.io/probaho-remit/"
+              target="_blank"
+              rel="noopener"
+              >Probaho Remit Live</a
+            >
+            <a
+              href="https://greenfactory-brain.vercel.app"
+              target="_blank"
+              rel="noopener"
+              >Green Factory Brain</a
+            >
+            <a
+              href="https://citybrain-ai.vercel.app"
+              target="_blank"
+              rel="noopener"
+              >CITYBRAIN AI</a
+            >
+            <a
+              href="https://landvault-muse.vercel.app"
+              target="_blank"
+              rel="noopener"
+              >LandVault &amp; MUSE</a
+            >
+          </div>
+        </div>
+        <div class="ft-base mono">
+          <span>2026 Ishan Ahmed Fahad · Department of CIS, Daffodil International University</span>
+          <button class="ft-again mono" id="ft-top" type="button">
+            Back to origin
+          </button>
+        </div>
+      </div>
+    </footer>
+
+    <main id="ui">
+      <header class="top">
+        <a href="#top" class="mark" aria-label="Ishan Ahmed Fahad">
+          <div class="mark-text-wrap">
+            <span class="mark-word">Ishan Ahmed Fahad</span>
+            <span class="mark-sub mono">CIS · Daffodil International Univ</span>
+          </div>
+        </a>
+        <div class="counter mono" aria-hidden="true" hidden>
+          <span id="count-now">01</span>
+          <span class="counter-sep">/</span>
+          <span>06</span>
+        </div>
+        <div class="top-r">
+          <button
+            class="skills-hud-btn mono"
+            id="skills-btn"
+            type="button"
+            aria-label="View Technical Skills Arsenal"
+          >
+            <span>Skills Arsenal</span>
+          </button>
+          <button
+            class="sound-btn mono"
+            id="sound-btn"
+            type="button"
+            aria-pressed="false"
+            aria-label="Toggle sound"
+          >
+            Sound <span id="sound-state">Off</span>
+          </button>
+          <button class="index-btn mono" id="index-btn" type="button">
+            Index
+          </button>
+        </div>
+      </header>
+
+      <nav class="luffy-hud" aria-label="Monkey D. Luffy 3D Scene Controls">
+        <button
+          class="luffy-pill active"
+          type="button"
+          data-luffy-jump="0"
+          title="Chapter 01: The Origin (3D Luffy &amp; Sunken Ghost Galleon)"
+        >
+          <span class="luffy-dot"></span>01 Origin
+        </button>
+        <button
+          class="luffy-pill"
+          type="button"
+          data-luffy-jump="0.16"
+          title="Chapter 02: The Memory (3D Luffy &amp; Devil Fruit)"
+        >
+          02 Memory
+        </button>
+        <button
+          class="luffy-pill"
+          type="button"
+          data-luffy-jump="0.545"
+          title="Chapter 04: Crystal Egg &amp; Luffy Gear 5 Sun God Awakening"
+        >
+          04 Egg Awakening
+        </button>
+        <button
+          class="luffy-pill"
+          type="button"
+          data-luffy-jump="0.72"
+          title="Chapters 05 to 06: 3rd-Person Luffy Spline Flight"
+        >
+          05-06 Luffy Flight
+        </button>
+        <button
+          class="luffy-pill nika-active"
+          id="luffy-nika-btn"
+          type="button"
+          aria-pressed="true"
+          title="Toggle Gear 5 Nika Conqueror's Haki Overdrive"
+        >
+          Gear 5 Nika: ON
+        </button>
+      </nav>
+
+      <section class="intro" id="intro">
+        <p class="intro-kicker mono">Dhaka, Bangladesh — Asia/Dhaka — Department of CIS @ DIU</p>
+        <h1 class="intro-title serif">
+          Ishan Ahmed Fahad · Web Developer &amp; AI Systems Engineer
+        </h1>
+        <p class="intro-now">
+          <i></i>Lead System Developer at
+          <a href="https://github.com/fahad3235/upay-ai" target="_blank" rel="noopener"
+            >Team Probaho (UPAY Sentinel AI)</a
+          >
+          — 2nd of 132 Teams (National Runner-Up) — Inter-University AI Dev Fest 2026
+        </p>
+      </section>
+
+      <section class="chapter" id="chapter" aria-live="polite">
+        <h2 class="ch-title serif" id="ch-title">Ishan Ahmed Fahad</h2>
+        <div class="ch-meta mono">
+          <span class="ch-num" id="ch-num">01</span>
+          <span class="ch-rule"></span>
+          <span class="ch-tag" id="ch-tag">The Origin</span>
+        </div>
+        <p class="ch-line" id="ch-line">
+          Web Developer &amp; AI Systems Engineer · Department of CIS, Daffodil International University. Building production AI copilots, high-velocity FinTech engines, and 3D WebGL worlds.
+        </p>
+        <dl class="ch-stats" id="ch-stats" hidden></dl>
+      </section>
+
+      <div class="work-labels" id="work-labels" aria-live="polite"></div>
+
+      <div
+        class="frame-tags"
+        id="frame-tags"
+        aria-hidden="true"
+      ></div>
+
+      <section class="finale" id="finale" aria-hidden="true">
+        <h2 class="finale-title serif">
+          Every line <span class="em-muted">engineered.</span>
+        </h2>
+        <p class="finale-kicker mono">06 / Fin · Ishan Ahmed Fahad</p>
+      </section>
+
+      <aside class="telemetry mono" aria-hidden="true" hidden>
+        <div>
+          <span class="k">POS</span><span id="t-pos">00.00 / 00.00 / 00.00</span>
+        </div>
+        <div>
+          <span class="k">FOV</span><span id="t-fov">42.0°</span
+          ><span class="k k2">DOF</span><span id="t-dof">f/2.0</span>
+        </div>
+        <div>
+          <span class="k">THR</span
+          ><span class="bar"><i id="t-bar"></i></span>
+        </div>
+      </aside>
+
+      <nav class="rail" id="rail" aria-label="Chapters"></nav>
+
+      <div class="scroll-cue mono" id="cue">
+        <span>Scroll to follow</span>
+        <i></i>
+      </div>
+
+      <a
+        class="basic"
+        href="https://github.com/fahad3235"
+        target="_blank"
+        rel="noopener"
+      >
+        <span class="basic-pill">Explore GitHub Repositories</span>
+        <span class="basic-pill basic-go" aria-hidden="true">
+          <svg
+            width="11"
+            height="11"
+            viewBox="0 0 11 11"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M2.5 8.5L8.5 2.5M4 2.5h4.5V7" />
+          </svg>
+        </span>
+      </a>
+
+      <nav class="index open" id="index" aria-hidden="false">
+        <ol id="index-list"></ol>
+      </nav>
+
+      <section class="projects-directory" id="projects-directory" aria-label="Flagship Systems Directory">
+        <header class="pd-header">
+          <div class="pd-kicker mono">Flagship Engineering Systems · Production Arsenal</div>
+          <h2 class="pd-title serif">Shipped Systems &amp; Technical Portfolio</h2>
+          <p class="pd-sub">
+            Every architecture engineered from first principles by Ishan Ahmed Fahad (DIU CIS · Lead Developer at Team Probaho).
+            Featuring AI transaction defense, sub-40ms spatial vision, cross-border remittance, predictive IoT telemetry, and custom Three.js WebGL.
+          </p>
+        </header>
+
+        <div class="pd-grid">
+          <!-- 01 UPAY Sentinel AI -->
+          <article class="pd-card" id="card-upay">
+            <div>
+              <div class="pd-card-head">
+                <span class="pd-num mono">01</span>
+                <span class="pd-tag mono">AI Agent · FinTech Defense</span>
+              </div>
+              <h3 class="pd-card-title serif">UPAY Sentinel AI</h3>
+              <div class="pd-award mono">🥈 2nd of 132 Teams (National Runner-Up) · Dev Fest 2026</div>
+              <p class="pd-desc">
+                Autonomous AI-driven transaction surveillance and anti-money laundering (AML) detection engine engineered for mobile financial services. Combines behavioral heuristic graphs, real-time risk scoring (99.2% accuracy), and automated SAR compliance report generation for banking-grade anomaly containment.
+              </p>
+              <div class="pd-stack mono">
+                <span>FastAPI</span><span>Python</span><span>React</span><span>PyTorch</span><span>TailwindCSS</span><span>PostgreSQL</span><span>Docker</span>
+              </div>
+            </div>
+            <div class="pd-actions mono">
+              <button class="pd-btn pd-btn-primary" type="button" onclick="if(window.openProjectModal)window.openProjectModal(0)">View 3D Case Study</button>
+              <a class="pd-btn" href="https://upay-sentinel.vercel.app" target="_blank" rel="noopener">Live Demo ↗</a>
+              <a class="pd-btn" href="https://github.com/fahad3235/upay-ai" target="_blank" rel="noopener">GitHub Code ↗</a>
+            </div>
+          </article>
+
+          <!-- 02 SightGuide AI -->
+          <article class="pd-card" id="card-sightguide">
+            <div>
+              <div class="pd-card-head">
+                <span class="pd-num mono">02</span>
+                <span class="pd-tag mono">Computer Vision · Edge AI</span>
+              </div>
+              <h3 class="pd-card-title serif">SightGuide AI</h3>
+              <div class="pd-award mono">👁️ Meta Global AI Hackathon 2026 Solo Entry</div>
+              <p class="pd-desc">
+                Real-time assistive spatial guidance system for visually impaired navigation. Leverages YOLOv8 edge inference and binaural spatial audio feedback cues to detect obstacles, street signs, and pedestrian crosswalks in sub-40ms latency with zero cloud dependency.
+              </p>
+              <div class="pd-stack mono">
+                <span>YOLOv8</span><span>PyTorch</span><span>OpenCV</span><span>FastAPI</span><span>WebSockets</span><span>React</span><span>TailwindCSS</span>
+              </div>
+            </div>
+            <div class="pd-actions mono">
+              <button class="pd-btn pd-btn-primary" type="button" onclick="if(window.openProjectModal)window.openProjectModal(1)">View 3D Case Study</button>
+              <a class="pd-btn" href="https://fahad3235.github.io/sightguide/" target="_blank" rel="noopener">Live Demo ↗</a>
+              <a class="pd-btn" href="https://github.com/fahad3235/sightguide" target="_blank" rel="noopener">GitHub Code ↗</a>
+            </div>
+          </article>
+
+          <!-- 03 Probaho Remit -->
+          <article class="pd-card" id="card-probaho">
+            <div>
+              <div class="pd-card-head">
+                <span class="pd-num mono">03</span>
+                <span class="pd-tag mono">FinTech · Cross-Border Settlement</span>
+              </div>
+              <h3 class="pd-card-title serif">Probaho Remit</h3>
+              <div class="pd-award mono">⭐ Shenzhen FinTech Competition · ScamShield Layer</div>
+              <p class="pd-desc">
+                High-throughput cross-border digital remittance architecture with automated FX rate arbitration, ScamShield fraud protection, compliance verification, and instant mobile wallet disbursement tracking. Engineered with ACID transaction safety and sub-second webhook orchestration.
+              </p>
+              <div class="pd-stack mono">
+                <span>Node.js</span><span>React</span><span>PostgreSQL</span><span>Redis</span><span>TailwindCSS</span><span>WebSockets</span>
+              </div>
+            </div>
+            <div class="pd-actions mono">
+              <button class="pd-btn pd-btn-primary" type="button" onclick="if(window.openProjectModal)window.openProjectModal(2)">View 3D Case Study</button>
+              <a class="pd-btn" href="https://fahad3235.github.io/probaho-remit/" target="_blank" rel="noopener">Live Demo ↗</a>
+              <a class="pd-btn" href="https://github.com/fahad3235/probaho-remit" target="_blank" rel="noopener">GitHub Code ↗</a>
+            </div>
+          </article>
+
+          <!-- 04 Green Factory Brain AI -->
+          <article class="pd-card" id="card-greenfactory">
+            <div>
+              <div class="pd-card-head">
+                <span class="pd-num mono">04</span>
+                <span class="pd-tag mono">Industrial IoT · CarbonIQ</span>
+              </div>
+              <h3 class="pd-card-title serif">Green Factory Brain AI</h3>
+              <div class="pd-award mono">🌿 Smart Sustainable Garment Factory AI Finalist</div>
+              <p class="pd-desc">
+                Predictive telemetry intelligence platform for industrial garment manufacturing facilities in Bangladesh. Monitors live power surges, pneumatic pressures, and thermal exhaust to reduce carbon intensity by 31% and forecast machine maintenance weeks before failure. Includes Bangla AI industrial advisor.
+              </p>
+              <div class="pd-stack mono">
+                <span>Python</span><span>FastAPI</span><span>InfluxDB</span><span>Grafana</span><span>React</span><span>Three.js</span>
+              </div>
+            </div>
+            <div class="pd-actions mono">
+              <button class="pd-btn pd-btn-primary" type="button" onclick="if(window.openProjectModal)window.openProjectModal(3)">View 3D Case Study</button>
+              <a class="pd-btn" href="https://greenfactory-brain.vercel.app" target="_blank" rel="noopener">Live Demo ↗</a>
+              <a class="pd-btn" href="https://github.com/fahad3235/green-factory-brain" target="_blank" rel="noopener">GitHub Code ↗</a>
+            </div>
+          </article>
+
+          <!-- 05 CITYBRAIN AI -->
+          <article class="pd-card" id="card-citybrain">
+            <div>
+              <div class="pd-card-head">
+                <span class="pd-num mono">05</span>
+                <span class="pd-tag mono">Urban AI · CCTV Traffic Analytics</span>
+              </div>
+              <h3 class="pd-card-title serif">CITYBRAIN AI</h3>
+              <div class="pd-award mono">🏙️ Smart City Solution · Dhaka Arterial Corridor</div>
+              <p class="pd-desc">
+                Metropolitan traffic optimization engine analyzing intersection density through live CCTV video feeds. Automatically recalculates dynamic traffic light phase cycles, reducing urban congestion choke points by 31% in simulated Dhaka arterial corridors.
+              </p>
+              <div class="pd-stack mono">
+                <span>Python</span><span>YOLO</span><span>FastAPI</span><span>Leaflet</span><span>React</span><span>PostGIS</span>
+              </div>
+            </div>
+            <div class="pd-actions mono">
+              <button class="pd-btn pd-btn-primary" type="button" onclick="if(window.openProjectModal)window.openProjectModal(4)">View 3D Case Study</button>
+              <a class="pd-btn" href="https://citybrain-ai.vercel.app" target="_blank" rel="noopener">Live Demo ↗</a>
+              <a class="pd-btn" href="https://github.com/fahad3235/citybrain-ai" target="_blank" rel="noopener">GitHub Code ↗</a>
+            </div>
+          </article>
+
+          <!-- 06 LandVault & MUSE Project Factory -->
+          <article class="pd-card" id="card-landvault">
+            <div>
+              <div class="pd-card-head">
+                <span class="pd-num mono">06</span>
+                <span class="pd-tag mono">WebGL 3D · Generative Suite</span>
+              </div>
+              <h3 class="pd-card-title serif">LandVault &amp; MUSE Factory</h3>
+              <div class="pd-award mono">⚓ LandHack 2026 &amp; Grand Line Creative Honors</div>
+              <p class="pd-desc">
+                Dual-stack flagship: LandVault provides cryptographically verified land parcel record management and spatial deed visualization; MUSE Project Factory is an automated generative production pipeline for rapid UI prototyping, 3D product showcase scenes, and verified web builds.
+              </p>
+              <div class="pd-stack mono">
+                <span>Three.js</span><span>GLSL Shaders</span><span>React</span><span>FastAPI</span><span>TailwindCSS</span>
+              </div>
+            </div>
+            <div class="pd-actions mono">
+              <button class="pd-btn pd-btn-primary" type="button" onclick="if(window.openProjectModal)window.openProjectModal(5)">View 3D Case Study</button>
+              <a class="pd-btn" href="https://landvault-muse.vercel.app" target="_blank" rel="noopener">Live Demo ↗</a>
+              <a class="pd-btn" href="https://github.com/fahad3235/landvault-muse" target="_blank" rel="noopener">GitHub Code ↗</a>
+            </div>
+          </article>
+        </div>
+
+        <div style="margin-top: 40px; padding: 24px; border: 1px solid var(--line); border-radius: 12px; background: rgba(255,255,255,0.02);">
+          <div class="mono" style="font-size: 11px; color: var(--accent); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 8px;">Client &amp; Ecosystem Web Rebuilds · MUSE Factory</div>
+          <h4 class="serif" style="font-size: 18px; color: var(--ink); margin: 0 0 16px 0;">Production Web Redesigns &amp; Verified Delivery</h4>
+          <div class="web-rebuilds-grid">
+            <div class="wr-card">
+              <h5 class="wr-title">MS Motors BD Redesign</h5>
+              <p class="wr-desc">Automotive dealership platform with responsive showcase, dynamic filtering, and mobile-optimized inspection flow.</p>
+            </div>
+            <div class="wr-card">
+              <h5 class="wr-title">Dhon Marketplace</h5>
+              <p class="wr-desc">Multi-vendor digital commerce architecture with real-time cart synchronization and instant checkout.</p>
+            </div>
+            <div class="wr-card">
+              <h5 class="wr-title">Shombob Website Rebuild</h5>
+              <p class="wr-desc">Service and workforce platform modernization with accessible UI and sub-second page transitions.</p>
+            </div>
+            <div class="wr-card">
+              <h5 class="wr-title">Alumni Association Portal</h5>
+              <p class="wr-desc">Department of CIS alumni networking hub, verified graduate profiles, and event registration portal.</p>
+            </div>
+            <div class="wr-card">
+              <h5 class="wr-title">Interactive 3D Book Portfolio</h5>
+              <p class="wr-desc">Procedural WebGL physics simulation rendering dynamic page curls and custom GLSL paper lighting.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <div
+      id="work-modal"
+      class="work-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="wm-backdrop" data-close></div>
+      <div class="wm-glass">
+        <header class="wm-head">
+          <div class="wm-meta mono">
+            <span id="wm-num">01</span>
+            <span class="wm-rule"></span>
+            <span id="wm-role">Lead System Developer</span>
+            <span class="wm-rule"></span>
+            <span id="wm-year">2026</span>
+          </div>
+          <h3 class="wm-title" id="wm-title">UPAY Sentinel AI</h3>
+          <div class="wm-award-badge mono" id="wm-award">2nd of 132 Teams — National Runner-Up (Team Probaho)</div>
+          <p class="wm-desc" id="wm-desc"></p>
+          <div class="wm-stack-pills mono" id="wm-stack-pills"></div>
+          <div class="wm-actions">
+            <a id="wm-live-btn" class="wm-action-btn wm-live-btn mono" href="https://upay-sentinel.vercel.app" target="_blank" rel="noopener">
+              <span class="btn-dot"></span><span>Live Demo</span> <i aria-hidden="true">↗</i>
+            </a>
+            <a id="wm-repo-btn" class="wm-action-btn wm-repo-btn mono" href="https://github.com/fahad3235/upay-ai" target="_blank" rel="noopener">
+              <span>GitHub Code</span> <i aria-hidden="true">↗</i>
+            </a>
+          </div>
+          <button
+            class="wm-close mono"
+            type="button"
+            data-close
+            aria-label="Close project"
+          >
+            x
+          </button>
+        </header>
+        <div class="wm-stage" id="wm-stage">
+          <div class="wm-media" id="wm-media"></div>
+          <div class="wm-cap mono" id="wm-cap">01 / 02</div>
+        </div>
+        <footer class="wm-foot">
+          <div class="wm-thumbs" id="wm-thumbs"></div>
+          <div class="wm-nav">
+            <button
+              type="button"
+              id="wm-prev"
+              class="mono"
+              aria-label="Previous media"
+            >
+              Prev
+            </button>
+            <button
+              type="button"
+              id="wm-next"
+              class="mono"
+              aria-label="Next media"
+            >
+              Next
+            </button>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <!-- SKILLS ARSENAL DRAWER MODAL -->
+    <div
+      id="skills-modal"
+      class="skills-modal"
+      aria-hidden="true"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="skills-backdrop" data-close-skills></div>
+      <div class="skills-drawer">
+        <header class="skills-head">
+          <div class="skills-meta mono">
+            <span class="skills-badge">Technical Arsenal</span>
+            <span class="skills-rule"></span>
+            <span>12 Core Disciplines</span>
+          </div>
+          <div class="skills-title-row">
+            <h3 class="skills-title">Technical Mastery &amp; Engineering Stack</h3>
+            <button
+              class="skills-close mono"
+              type="button"
+              data-close-skills
+              aria-label="Close Skills Drawer"
+            >
+              x
+            </button>
+          </div>
+          <p class="skills-sub serif">
+            Production-honed capabilities across agentic AI systems, real-time computer vision, WebGL 3D graphics, and resilient full-stack microservices.
+          </p>
+        </header>
+
+        <div class="skills-body">
+          <div class="skills-grid">
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">01</span>
+                <h4 class="sc-name">Full-Stack Web Architecture</h4>
+              </div>
+              <p class="sc-desc">Production web engineering from high-velocity single-page apps to serverless architectures.</p>
+              <div class="sc-pills mono">
+                <span>React</span>
+                <span>Next.js</span>
+                <span>TypeScript</span>
+                <span>TailwindCSS</span>
+                <span>Vite</span>
+                <span>HTML5 / Modern CSS</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">02</span>
+                <h4 class="sc-name">AI &amp; Neural Copilots</h4>
+              </div>
+              <p class="sc-desc">Autonomous agent workflows, high-precision RAG pipelines, and LLM integrations.</p>
+              <div class="sc-pills mono">
+                <span>RAG Pipelines</span>
+                <span>LangChain</span>
+                <span>Multi-Agent Swarms</span>
+                <span>OpenAI / Gemini APIs</span>
+                <span>Vector Embeddings</span>
+                <span>Prompt Engineering</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">03</span>
+                <h4 class="sc-name">Computer Vision &amp; Edge AI</h4>
+              </div>
+              <p class="sc-desc">Low-latency object tracking, spatial edge inference, and sensory feedback systems.</p>
+              <div class="sc-pills mono">
+                <span>YOLOv8</span>
+                <span>OpenCV</span>
+                <span>PyTorch</span>
+                <span>Edge Inference</span>
+                <span>Spatial Audio</span>
+                <span>SightGuide AI</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">04</span>
+                <h4 class="sc-name">FinTech &amp; Transaction Security</h4>
+              </div>
+              <p class="sc-desc">Anti-money laundering detection, fraud pattern surveillance, and compliance filing.</p>
+              <div class="sc-pills mono">
+                <span>UPAY Sentinel AI</span>
+                <span>AML Anomaly Engine</span>
+                <span>SAR Automated Filing</span>
+                <span>Behavioral Heuristics</span>
+                <span>Audit Logging</span>
+                <span>Sub-Second Inference</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">05</span>
+                <h4 class="sc-name">Interactive 3D &amp; WebGL</h4>
+              </div>
+              <p class="sc-desc">Custom GLSL shaders, procedural geometries, camera path choreography, and caustics.</p>
+              <div class="sc-pills mono">
+                <span>Three.js</span>
+                <span>GLSL Shaders</span>
+                <span>Procedural Mesh</span>
+                <span>Dynamic Water Caustics</span>
+                <span>Rigged 3D Character</span>
+                <span>Canvas Textures</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">06</span>
+                <h4 class="sc-name">Backend &amp; Microservices</h4>
+              </div>
+              <p class="sc-desc">Asynchronous APIs, streaming data transports, and resilient backend pipelines.</p>
+              <div class="sc-pills mono">
+                <span>FastAPI</span>
+                <span>Python</span>
+                <span>Node.js</span>
+                <span>RESTful APIs</span>
+                <span>WebSockets</span>
+                <span>AsyncIO</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">07</span>
+                <h4 class="sc-name">Databases &amp; Caching</h4>
+              </div>
+              <p class="sc-desc">ACID transaction management, high-concurrency caching, and vector indexing.</p>
+              <div class="sc-pills mono">
+                <span>PostgreSQL</span>
+                <span>Redis</span>
+                <span>MongoDB</span>
+                <span>Supabase</span>
+                <span>InfluxDB</span>
+                <span>PostGIS</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">08</span>
+                <h4 class="sc-name">DevOps &amp; Cloud Deployment</h4>
+              </div>
+              <p class="sc-desc">Container orchestration, automated CI/CD pipelines, and zero-downtime shipping.</p>
+              <div class="sc-pills mono">
+                <span>Docker</span>
+                <span>GitHub Actions</span>
+                <span>Vercel</span>
+                <span>Render</span>
+                <span>Linux / Bash</span>
+                <span>Production Monitoring</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">09</span>
+                <h4 class="sc-name">Industrial IoT &amp; Telemetry</h4>
+              </div>
+              <p class="sc-desc">Preventative maintenance, thermal sensor monitoring, and factory energy optimization.</p>
+              <div class="sc-pills mono">
+                <span>Green Factory Brain</span>
+                <span>Sensor Telemetry</span>
+                <span>Predictive Maintenance</span>
+                <span>Time-Series Storage</span>
+                <span>Grafana</span>
+                <span>Surge Prevention</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">10</span>
+                <h4 class="sc-name">Urban Tech &amp; Remittance</h4>
+              </div>
+              <p class="sc-desc">Metropolitan traffic flow analysis, dynamic signaling, and cross-border payment pipelines.</p>
+              <div class="sc-pills mono">
+                <span>CityBrain AI</span>
+                <span>Probaho Remit</span>
+                <span>Dynamic Signal Phases</span>
+                <span>FX Arbitration</span>
+                <span>Instant Payouts</span>
+                <span>Urban Simulation</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">11</span>
+                <h4 class="sc-name">Design Systems &amp; UX Craft</h4>
+              </div>
+              <p class="sc-desc">Obsidian dark aesthetics, high-density editorial layouts, and micro-interactions.</p>
+              <div class="sc-pills mono">
+                <span>Figma</span>
+                <span>Design Systems</span>
+                <span>Editorial Typography</span>
+                <span>Accessibility (WCAG)</span>
+                <span>Motion Microcopy</span>
+                <span>Hallmark Aesthetic</span>
+              </div>
+            </div>
+
+            <div class="skill-category-card">
+              <div class="sc-header">
+                <span class="sc-icon">12</span>
+                <h4 class="sc-name">Leadership &amp; Hackathon Honors</h4>
+              </div>
+              <p class="sc-desc">Team direction, rapid iterative prototyping, and national championship placements.</p>
+              <div class="sc-pills mono">
+                <span>Team Probaho Lead</span>
+                <span>2nd / 132 National Runner-Up</span>
+                <span>Inter-University AI Dev Fest 2026</span>
+                <span>DIU CIS Graduate</span>
+                <span>Technical Mentorship</span>
+                <span>Rapid Prototyping</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <footer class="skills-foot">
+          <div class="skills-stats mono">
+            <div><span class="ss-val">7+</span><span class="ss-lbl">Flagship Systems</span></div>
+            <div><span class="ss-val">99.2%</span><span class="ss-lbl">AI Detection Acc.</span></div>
+            <div><span class="ss-val">2nd / 132</span><span class="ss-lbl">National Runner-Up</span></div>
+            <div><span class="ss-val">DIU CIS</span><span class="ss-lbl">Core Alma Mater</span></div>
+          </div>
+        </footer>
+      </div>
+    </div>
+
+    <div id="loader" role="status" aria-live="polite">
+      <div class="loader-inner">
+        <span class="loader-k mono">Tracing the thread</span>
+        <div class="loader-bar"><i id="loader-fill"></i></div>
+        <span class="loader-p mono" id="loader-p">000</span>
+        <div class="loader-enter" id="loader-enter">
+          <button
+            type="button"
+            class="enter-btn mono"
+            id="enter-mute"
+            data-enter="mute"
+          >
+            Enter without sound
+          </button>
+          <button
+            type="button"
+            class="enter-btn on mono"
+            id="enter-sound"
+            data-enter="sound"
+          >
+            Enter with sound
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div id="cursor" aria-hidden="true">
+      <i class="c-dot"></i>
+      <i class="c-ring"></i>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

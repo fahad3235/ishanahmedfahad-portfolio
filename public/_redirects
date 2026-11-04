@@ -1,0 +1,6 @@
+/assets/*       /assets/:splat       200
+/models/*       /models/:splat       200
+/media/*        /media/:splat        200
+/fonts/*        /fonts/:splat        200
+/ext-assets/*   /ext-assets/:splat   200
+/*              /index.html          200

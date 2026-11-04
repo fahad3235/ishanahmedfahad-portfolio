@@ -1,0 +1,27 @@
+/*
+  Access-Control-Allow-Origin: *
+  X-Frame-Options: SAMEORIGIN
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+
+/assets/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000, immutable
+
+/models/*
+  Access-Control-Allow-Origin: *
+  Content-Type: model/gltf-binary
+  Cache-Control: public, max-age=31536000, immutable
+
+/fonts/*
+  Access-Control-Allow-Origin: *
+  Content-Type: font/woff
+  Cache-Control: public, max-age=31536000, immutable
+
+/media/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000, immutable
+
+/ext-assets/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, max-age=31536000, immutable

@@ -1,0 +1,37 @@
+/* Hallmark · genre: atmospheric · theme: custom · surface: absolute · copy: verbatim · shape: app screen · redesign: polish */
+:root {
+  --ink: #f2eee7;
+  --ink-2: #f2eee79e;
+  --ink-3: #f2eee747;
+  --line: #f2eee72e;
+  --accent: #ff3a26;
+  --luffy-red: #d91e2a;
+  --luffy-straw: #f5b82e;
+  --luffy-nika: #c8b6ff;
+  --bg: #030203;
+  --bg-glass: #0e0b0df2;
+  --bg-modal: #0b0b0df7;
+  --ink-light: #141312;
+  --ink-light-2: #14131299;
+  --ink-light-3: #1413124d;
+  --line-light: #14131233;
+  --mark-bg: #15131a;
+  --shadow-dark-1: #0000008c;
+  --shadow-dark-2: #00000066;
+  --shadow-dark-3: #000000a6;
+  --shadow-light: #ffffff99;
+  --pc-default: #b35cff;
+  --modal-grad-1: #030306e6;
+  --modal-grad-2: #010103f5;
+  --modal-shadow: #000000b3;
+  --modal-highlight: #ffffff0f;
+  --stage-bg: #00000073;
+  --footer-grad: #0000009e;
+  --footer-line-mid: #ff5a3c59;
+  --footer-line-glow: #ff462899;
+  --f-display: "Geist", "Helvetica Neue", sans-serif;
+  --f-serif: var(--f-display);
+  --f-mono: var(--f-display);
+  --gutter: clamp(16px, 3.2vw, 48px);
+  --ease: cubic-bezier(0.2, 0.7, 0.1, 1);
+}
