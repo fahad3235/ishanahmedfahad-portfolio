@@ -91,9 +91,42 @@ function initLuffyHudControls() {
           }
         });
       }
+      if (nikaOn) {
+        const audio = window.__audio;
+        if (audio && audio.playTrack) {
+          audio.playTrack(0);
+        }
+      }
       window.dispatchEvent(
         new CustomEvent("sfx", { detail: { name: nikaOn ? "release" : "card" } })
       );
+    });
+  }
+
+  // Sound track skip & playback enhancement
+  const soundBtn = document.getElementById("sound-btn") || document.getElementById("sound");
+  if (soundBtn) {
+    soundBtn.addEventListener("contextmenu", (e) => {
+      e.preventDefault();
+      const audio = window.__audio;
+      if (audio && audio.nextTrack) {
+        audio.nextTrack();
+        triggerHaptic(20);
+      }
+    });
+
+    let lastTap = 0;
+    soundBtn.addEventListener("touchend", (e) => {
+      const now = Date.now();
+      if (now - lastTap < 350) {
+        e.preventDefault();
+        const audio = window.__audio;
+        if (audio && audio.nextTrack) {
+          audio.nextTrack();
+          triggerHaptic(25);
+        }
+      }
+      lastTap = now;
     });
   }
 
