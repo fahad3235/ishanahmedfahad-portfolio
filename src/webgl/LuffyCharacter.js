@@ -1093,15 +1093,15 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     // with spline flight basis (+Y forward, -Z dorsal).
     const pitchGroup = new yr();
     pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
-    // Keep Luffy upright (back/hair on top, fist extended forward) with a subtle heroic angle
-    // so his face (+X, +Z) and chest are visible while his body stays right-side-up!
-    flyClone.rotation.set(-0.14, 0.38, -0.32);
+    // Default flight orientation inside pitchGroup; dynamically steered toward the camera during flight & finale!
+    flyClone.rotation.set(0.15, -0.35, -0.25);
     flyClone.scale.setScalar(1.95);
     pitchGroup.add(flyClone);
     flyHolder.add(pitchGroup);
 
     state.model.add(flyHolder);
     state.tripoFlyingHolder = flyHolder;
+    state.tripoFlyingPitch = pitchGroup;
     state.tripoFlyingMesh = flyClone;
 
     if (baseMesh) baseMesh.visible = false;
