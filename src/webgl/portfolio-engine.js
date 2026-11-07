@@ -6104,9 +6104,9 @@ float gKeySh = 1.0;`).replace(`#include <lights_fragment_begin>`,Qg).replace(`#i
       float near = smoothstep(0.3, 1.1, distance(vW, cameraPosition));
       gl_FragColor = vec4(uCol * uAmt * (0.06 + arcs * 1.5) * core * near, 1.0);
     }`};function Ly(e){return new el({uniforms:{uCol:{value:new G(`#d9c8ff`).multiplyScalar(3)},uAmt:{value:0},uT:{value:0},uSeed:{value:e}},vertexShader:Iy.vertex,fragmentShader:Iy.fragment,transparent:!0,blending:2,depthWrite:!1,side:2,toneMapped:!1})}function Ry(){let e=new yr;e.name=`charge`;let t=new zc(1,.012,6,160);t.rotateX(Math.PI/2);let n=[0,1,2].map(n=>{let r=new J(t,Ly(n*7.3));return r.renderOrder=40,r.frustumCulled=!1,e.add(r),r}),r=new Pc(.96,1,160,1);r.rotateX(-Math.PI/2);let i=new J(r,Ly(31));i.material.uniforms.uCol.value.set(`#fff0c8`).multiplyScalar(4),i.renderOrder=41,i.frustumCulled=!1,e.add(i);let a=new G,o=new G(`#b9a0ff`),s=new G(`#fff0c4`),c=e=>.3+12*(1-(1-e)**2.2);return{group:e,shockRadius:c,set({charge:t=0,lead:r=0,shock:l=0,foot:u=0,head:d=2,x:f=0,z:p=0,r:m=.5,t:h=0}){if(e.visible=t>.002||l>0&&l<1,!e.visible)return;let g=d-u;a.copy(o).lerp(s,Math.min(1,t)),n.forEach((e,n)=>{let i=e.material.uniforms;i.uT.value=h;let o,s;n===0?(o=Math.min(1,r),s=.35*(1-o)+.65*Math.sin(Math.PI*o)):(o=(h*.5+n/2)%1,s=Math.sin(Math.PI*o)),e.position.set(f,u+o*g,p),e.scale.setScalar(m*(1.15-.35*(Math.abs(o-.45)*2)**2)),i.uAmt.value=s*t*(n===0?1.2:.7),i.uCol.value.copy(a).multiplyScalar(2)}),i.visible=l>0&&l<1,i.visible&&(i.position.set(f,u+g*.42,p),i.scale.setScalar(c(l)),i.material.uniforms.uAmt.value=(1-l)**1.5*1.8,i.material.uniforms.uT.value=h)}}}var zy=.62;function By({work:e,flight:t}){let n=ky({scale:2}),r=Py(),i=Ry(),a=new yr;a.name=`hero`;let o=new yr;o.add(n.group),a.add(o,r.group,i.group),r.group.visible=!0;let s=e.center,c=new yn().setFromEuler(new tr(0,e.group.rotation.y,0)),l={x:-.18,z:.28},u={center:new U(0,0,0),r:1.3,fitted:!1},d=new yn,f=new yn,p=new yn,m=new tr(0,0,0,`YXZ`),h=new W,g=new U;new U;let _=new U,v=new U,y=new U,b={pos:new U,T:new U,U:new U,S:new U},x=new U,S=new U,C=new U,w=new U,T=new yn,E=new yn,D={lat:0,vert:0,latPrev:0,vertPrev:0,latV:0,vertV:0,bank:0,pitch:.16,sx:0,sy:0,started:!1},O=new U,k=new U,A=new U,j=new U,M=new U,N=0,ee=0,P=-1,te=new yn,ne=new U,re=new U,ie={L:0,fly:0,awake:0,scale:1,rider:O,bank:0,beat:0,beatPhase:0};function ae(){let e=n.bonePoints(a);if(e.length<8)return;new Wr().setFromPoints(e).getCenter(u.center);let t=0;for(let n of e)t=Math.max(t,n.distanceTo(u.center));u.r=t+.34,u.fitted=!0}function oe(e,n,r,i,a){t.frameAt(e,b),t.smoothForward(e,3.5,x),t.smoothForward(e+6,3.5,S),D.sx=hg(D.sx,a.target.x,2.2,r),D.sy=hg(D.sy,a.target.y,2.2,r);let o=Math.sin(i*.72)*.26+Math.sin(i*1.63+1)*.07,s=ie.scale/zy,c=(o+D.sx*.5)*s,l=(Math.sin(i*1.1)*.08+D.sy*.26)*s;D.started||=(D.latPrev=c,D.vertPrev=l,!0),D.latV=hg(D.latV,(c-D.latPrev)/Math.max(r,.001),6,r),D.vertV=hg(D.vertV,(l-D.vertPrev)/Math.max(r,.001),6,r),D.latPrev=c,D.vertPrev=l,D.lat=c,D.vert=l;let u=g.subVectors(S,x).dot(b.S);D.bank=hg(D.bank,pg(-D.latV*.5-D.sx*.3-u*2.2,-.9,.9),2.2,r),D.pitch=hg(D.pitch,.16+pg(D.vertV*.08,-.3,.3),3,r),w.copy(b.pos).addScaledVector(b.U,n+l).addScaledVector(b.S,c),v.copy(x).multiplyScalar(Math.cos(D.pitch)).addScaledVector(b.U,Math.sin(D.pitch)).normalize(),y.copy(b.U).addScaledVector(v,-v.dot(b.U)).normalize().negate(),_.crossVectors(v,y).normalize(),h.makeBasis(_,v,y),T.setFromRotationMatrix(h),T.premultiply(p.setFromAxisAngle(v,D.bank)),ie.bank=D.bank}function se({t,dt:p,st:h,phase:g,raycaster:_,input:v,camera:y}){let{crack:b,shatter:x,awake:S,fly:A}=g,j=Z(0,1,S),M=Z(0,1,A);ie.awake=S,ie.fly=A,ie.L=h.L;let se=Math.sin(t*.5)*.12*(1-j);C.copy(e.w(s.x,s.y+se+j*.45,s.z));let ce=-.16+Math.PI/2+Math.sin(t*.07)*.22*(1-Z(.2,.9,x)),F=Z(.3,.85,S);m.set(mg(l.x,0,j),mg(ce,-.16,F*F*(3-2*F)),mg(l.z+Math.sin(t*.11)*.06,0,j)),d.setFromEuler(m),E.copy(c).multiply(d);let le=M*M*M*(M*(M*6-15)+10);if(ie.scale=mg(1,zy,le),A>0){oe(h.L,h.hover*(ie.scale/zy),p,t,v),k.copy(C).lerp(w,.35),k.y=Math.max(C.y,w.y)+1.4;let e=le,n=1-e;a.position.set(0,0,0).addScaledVector(C,n*n).addScaledVector(k,2*n*e).addScaledVector(w,e*e),a.quaternion.slerpQuaternions(E,T,Z(.1,.9,M))}else D.started=!1,a.position.copy(C),a.quaternion.copy(E);if(a.scale.setScalar(ie.scale),o.quaternion.identity(),O.copy(a.position),r.group.visible||x<1){f.copy(a.quaternion).invert().multiply(c),r.group.quaternion.copy(f),r.group.position.copy(u.center),r.group.scale.setScalar(u.r/1),N+=p*2.3*(1+b*1.6);let e=Math.max(0,Math.sin(N))**10+.55*Math.max(0,Math.sin(N-.55))**10;ie.beat=e,ie.beatPhase=N,r.set({crack:b,shatter:x,beat:e,glow:1+b*.8,scanY:Math.sin(t*.55)*1.15,t})}n.uniforms.uRim.value=Z(.1,.9,S)*.18,n.uniforms.uShade.value=mg(.16,1,Z(.1,.6,x)),n.update({t,dt:p,raycaster:_,input:v,camera:y,awake:S,fly:A,stir:1-Z(0,.6,b)});let ue=Z(.3,1,x)*.7,de=Z(.05,.6,S),fe=Z(.8,1,S),pe=Math.max(ue,de)*(1-fe*.7)*(1-Z(0,.35,A));ee+=p*(1+pe*2.5),n.uniforms.uCharge.value=pe,n.uniforms.uChargeT.value=ee,S>.85&&A===0&&P<0&&(P=0,dispatchEvent(new CustomEvent(`sfx`,{detail:{name:`release`}}))),S<.6&&(P=-1),P>=0&&(P+=p);let me=P>=0?Math.min(1,P/2.4):0,he=e.grass&&e.grass.uniforms;if(n.state.ready&&(pe>.002||me>0&&me<1)){i.group.position.set(0,0,0),i.group.quaternion.copy(te.copy(a.quaternion).invert().multiply(c));let e=n.bonePoints(i.group),t=1/0,r=-1/0;re.set(0,0,0);for(let n of e)t=Math.min(t,n.y),r=Math.max(r,n.y),re.add(n);re.divideScalar(Math.max(1,e.length));let o=0;for(let t of e)o=Math.max(o,Math.hypot(t.x-re.x,t.z-re.z));let s=Math.max(.5,r-t);i.set({charge:pe,lead:g.lead??0,shock:me,foot:t-s*.05,head:r+s*.12,x:re.x,z:re.z,r:Math.min(.85,o*.7+.15),t:ee}),he&&(i.group.localToWorld(ne.set(re.x,t,re.z)),he.uShock.value.set(ne.x,ne.y,ne.z,i.shockRadius(me)),he.uShockA.value=me>0&&me<1?(1-me)**1.2:0)}else i.set({charge:0}),he&&(he.uShockA.value=0);n.state.ready&&!u.fitted&&S===0&&A===0&&(a.updateMatrixWorld(!0),ae())}function ce(e,n,r){let i=ie.scale/zy,a={back:n.back*i,lift:n.lift*i,side:n.side*i,ahead:n.ahead*i,hover:n.hover*i,lookLift:.35*i,lw:n.lw,flat:n.flat,keep:n.keep};return t.chase(e,a,r,O),t.frameAt(e,b),M.subVectors(r.pos,r.rider),j.copy(r.rider).addScaledVector(b.S,D.lat*.45).addScaledVector(b.U,D.vert*.45),A.copy(O).lerp(j,Z(.55,1,ie.fly)),r.look.sub(O).add(A),r.pos.copy(A).add(M),r.focus=r.focus||new U,r.focus.copy(O),r}return{group:a,figure:n,egg:r,charge:i,state:ie,update:se,chase:ce,lean:l,eggFit:u}}var Vy=[
-  "./media/audio/drums-of-liberation.mp3",
-  "./media/audio/come-n-go.mp3",
-  "./media/audio/disrespectful.mp3"
+  "./media/audio/drums-of-liberation.mp3?v=6"
+
+
 ];
 var Hy=[18000, 19000, 20000, 18000, 19000, 20000, 20000];
 function Uy({button:e}={}){
@@ -6139,10 +6139,10 @@ function Uy({button:e}={}){
     bus.connect(conv);
     let u=new Audio(Vy[0]);
     u.preload=`auto`;
-    u.loop=!1;
+    u.loop=!0;
     u.addEventListener(`ended`,()=>{
-      l=(l+1)%Vy.length;
-      u.src=Vy[l];
+      u.currentTime=0;
+      u.loop=!0;
       u.play().catch(()=>{});
     });
     let songFilter=t.createBiquadFilter();
@@ -6400,7 +6400,7 @@ function Uy({button:e}={}){
   function nextTrack(){
     if(!n||!n.el)return;
     l=(l+1)%Vy.length;
-    n.el.src=Vy[l];
+    n.el.loop=!0;
     if(i&&r)n.el.play().catch(()=>{});
     _sfx(`card`);
     return l;
@@ -6408,7 +6408,7 @@ function Uy({button:e}={}){
   function playTrack(idx){
     if(!n||!n.el||!Vy[idx])return;
     l=idx;
-    n.el.src=Vy[l];
+    n.el.loop=!0;
     if(i&&r)n.el.play().catch(()=>{});
     return l;
   }
