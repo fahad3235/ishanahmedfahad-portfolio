@@ -975,10 +975,11 @@ export function attachLuffyToSkeleton(T, bones, uniforms) {
     chestAdapter.add(cloudAndHaki);
   }
 
-  // 4. Load BOTH of the user's Tripo PBR 3D Luffy GLB models:
+  // 4. Load BOTH of the user's Tripo PBR 3D Luffy GLB models for the hero figure:
   //    - ./models/luffy-egg.glb for the Chapter 04 Egg & Awakening sequence (fly <= 0.02)
   //    - ./models/luffy-flying.glb for the 3D Spline Flight sequence after awakening (fly > 0.02)
-  if (T.Sv && T.Sy && T.state) {
+  //    Skip loading 3M-vertex GLBs on secondary chapter clones (state.skipTripo) to keep mobile GPU memory & FPS ultra-smooth!
+  if (T.Sv && T.Sy && T.state && !T.state.skipTripo) {
     loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter);
   }
 }
@@ -988,12 +989,14 @@ let _flyingTripoPromise = null;
 
 function prepareTripoClone(gltf, T, uniforms, keyName) {
   const { $g, Q } = T;
+  const isCoarseMobile = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
   const modelClone = gltf.scene.clone(true);
   modelClone.traverse((child) => {
     if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
-      child.frustumCulled = false;
+      // Disable expensive 1M-vertex shadow map projection on mobile touch GPUs for 60fps smoothness
+      child.castShadow = !isCoarseMobile;
+      child.receiveShadow = !isCoarseMobile;
+      child.frustumCulled = true;
       if (child.material) {
         const mat = child.material.clone();
         mat.envMapIntensity = 0.85;
@@ -1048,21 +1051,7 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     });
   }
 
-  if (!_flyingTripoPromise) {
-    _flyingTripoPromise = new Promise((resolve) => {
-      new Sv().setMeshoptDecoder(Sy).load(
-        "./models/luffy-flying.glb",
-        (gltf) => resolve(gltf),
-        undefined,
-        (err) => {
-          console.warn("[luffy-flying] failed to load GLB:", err);
-          resolve(null);
-        }
-      );
-    });
-  }
-
-  // 1. Egg & Awakening Luffy GLB Model (active in egg & awakening before spline flight, and in chapter slots)
+  // 1. Egg & Awakening Luffy GLB Model (active in egg & awakening before spline flight)
   _eggTripoPromise.then((gltf) => {
     if (!gltf || !gltf.scene || !state || !state.model) return;
     const eggHolder = new yr();
@@ -1082,36 +1071,46 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     if (baseMesh) baseMesh.visible = false;
     if (headAdapter) headAdapter.visible = false;
     if (chestAdapter) chestAdapter.visible = false;
-  });
 
-  // 2. Flying Luffy GLB Model (active during 3D spline flight after awakening)
-  _flyingTripoPromise.then((gltf) => {
-    if (!gltf || !gltf.scene || !state || !state.model) return;
-    const flyHolder = new yr();
-    flyHolder.name = "tripo-luffy-flying-holder";
-    flyHolder.visible = false;
-    const flyClone = prepareTripoClone(gltf, T, uniforms, "tripo-luffy-flying-pbr");
+    // 2. Stagger-load the Flying Luffy GLB Model right after the Egg GLB finishes (or immediately on desktop)
+    //    so mobile browsers never decode two 18MB GLBs simultaneously!
+    if (!_flyingTripoPromise) {
+      _flyingTripoPromise = new Promise((resolve) => {
+        new Sv().setMeshoptDecoder(Sy).load(
+          "./models/luffy-flying.glb",
+          (fGltf) => resolve(fGltf),
+          undefined,
+          (err) => {
+            console.warn("[luffy-flying] failed to load GLB:", err);
+            resolve(null);
+          }
+        );
+      });
+    }
 
-    // Align horizontal flying mesh (+Z forward, +Y dorsal, face/chest normal pointing toward +X - 0.15*Y)
-    // with spline flight basis (+Y forward, -Z dorsal) EXACTLY like figure.v2.glb!
-    const pitchGroup = new yr();
-    pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
-    // In figure.v2.glb, the character's belly/chest/face points toward local +Z (which is -Y in pitchGroup).
-    // Rotating flyClone around Z by -1.72 rad (-98.5 deg) maps the mesh's face/belly normal (cos(-0.15), sin(-0.15), 0)
-    // directly to (0, -1, 0) in pitchGroup = local +Z in hero group, matching the original figure 100%!
-    flyClone.rotation.set(0, 0, -1.72);
-    flyClone.scale.setScalar(1.95);
-    pitchGroup.add(flyClone);
-    flyHolder.add(pitchGroup);
+    _flyingTripoPromise.then((fGltf) => {
+      if (!fGltf || !fGltf.scene || !state || !state.model) return;
+      const flyHolder = new yr();
+      flyHolder.name = "tripo-luffy-flying-holder";
+      flyHolder.visible = false;
+      const flyClone = prepareTripoClone(fGltf, T, uniforms, "tripo-luffy-flying-pbr");
 
-    state.model.add(flyHolder);
-    state.tripoFlyingHolder = flyHolder;
-    state.tripoFlyingPitch = pitchGroup;
-    state.tripoFlyingMesh = flyClone;
+      const pitchGroup = new yr();
+      pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
+      flyClone.rotation.set(0, 0, -1.72);
+      flyClone.scale.setScalar(1.95);
+      pitchGroup.add(flyClone);
+      flyHolder.add(pitchGroup);
 
-    if (baseMesh) baseMesh.visible = false;
-    if (headAdapter) headAdapter.visible = false;
-    if (chestAdapter) chestAdapter.visible = false;
+      state.model.add(flyHolder);
+      state.tripoFlyingHolder = flyHolder;
+      state.tripoFlyingPitch = pitchGroup;
+      state.tripoFlyingMesh = flyClone;
+
+      if (baseMesh) baseMesh.visible = false;
+      if (headAdapter) headAdapter.visible = false;
+      if (chestAdapter) chestAdapter.visible = false;
+    });
   });
 }
 
@@ -1171,7 +1170,7 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
         const chap = chapters[cfg.chapIdx];
         const slot = chap && chap.slots && chap.slots[cfg.slotName];
         if (!slot) continue;
-        const cloneFig = T.ky({ scale: cfg.scale * 2 });
+        const cloneFig = T.ky({ scale: cfg.scale * 2, skipTripo: true });
         cloneFig.ready.then(() => {
           cloneFig.uniforms.uShade.value = 1.0;
           cloneFig.uniforms.uRim.value = 0.35;
@@ -1201,6 +1200,8 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
   //    right onto the red circular platform where the glowing red thread coils!
   const netChap = chapters[5];
   if (netChap && T.Sv) {
+    const isMobile = typeof matchMedia === "function" && matchMedia("(pointer: coarse)").matches;
+    setTimeout(() => {
     const fightSlot = (netChap.slots && netChap.slots.figure) || netChap.group;
     const dracoLoader = new DRACOLoader();
     dracoLoader.setDecoderPath("./draco/");
@@ -1258,5 +1259,6 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
         console.warn("[luffy-ipu-fight] failed to load GLB:", err);
       }
     );
+    }, isMobile ? 1200 : 100);
   }
 }
