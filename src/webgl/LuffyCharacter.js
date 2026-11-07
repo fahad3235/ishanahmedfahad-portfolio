@@ -1089,12 +1089,14 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     flyHolder.visible = false;
     const flyClone = prepareTripoClone(gltf, T, uniforms, "tripo-luffy-flying-pbr");
 
-    // Align horizontal flying mesh (+Z forward, +Y dorsal, face/chest normal pointing toward +X)
-    // with spline flight basis (+Y forward, -Z dorsal).
+    // Align horizontal flying mesh (+Z forward, +Y dorsal, face/chest normal pointing toward +X - 0.15*Y)
+    // with spline flight basis (+Y forward, -Z dorsal) EXACTLY like figure.v2.glb!
     const pitchGroup = new yr();
     pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
-    // Default flight orientation inside pitchGroup; dynamically steered toward the camera during flight & finale!
-    flyClone.rotation.set(0.15, -0.35, -0.25);
+    // In figure.v2.glb, the character's belly/chest/face points toward local +Z (which is -Y in pitchGroup).
+    // Rotating flyClone around Z by -1.72 rad (-98.5 deg) maps the mesh's face/belly normal (cos(-0.15), sin(-0.15), 0)
+    // directly to (0, -1, 0) in pitchGroup = local +Z in hero group, matching the original figure 100%!
+    flyClone.rotation.set(0, 0, -1.72);
     flyClone.scale.setScalar(1.95);
     pitchGroup.add(flyClone);
     flyHolder.add(pitchGroup);
