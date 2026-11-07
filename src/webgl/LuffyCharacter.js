@@ -973,6 +973,91 @@ export function attachLuffyToSkeleton(T, bones, uniforms) {
     const cloudAndHaki = createNikaCloudAndHakiGroup(T, uniforms);
     chestAdapter.add(cloudAndHaki);
   }
+
+  // 4. Load the user's flying Tripo PBR 3D Luffy model (./models/luffy-flying.glb)
+  //    so after awakening, Luffy flies along the 3D spline line with this model!
+  if (T.Sv && T.Sy && T.state) {
+    loadFlyingTripoLuffy(T, uniforms, headAdapter, chestAdapter);
+  }
+}
+
+let _flyingTripoPromise = null;
+
+function loadFlyingTripoLuffy(T, uniforms, headAdapter, chestAdapter) {
+  const { yr, Sv, Sy, $g, Q, baseMesh, state } = T;
+  if (!_flyingTripoPromise) {
+    _flyingTripoPromise = new Promise((resolve) => {
+      new Sv().setMeshoptDecoder(Sy).load(
+        "./models/luffy-flying.glb",
+        (gltf) => resolve(gltf),
+        undefined,
+        (err) => {
+          console.warn("[luffy-flying] failed to load GLB:", err);
+          resolve(null);
+        }
+      );
+    });
+  }
+
+  _flyingTripoPromise.then((gltf) => {
+    if (!gltf || !gltf.scene || !state || !state.model) return;
+    const holder = new yr();
+    holder.name = "tripo-luffy-flying-holder";
+    holder.visible = false; // Activated after awakening when Luffy flies along the line!
+
+    const modelClone = gltf.scene.clone(true);
+    modelClone.traverse((child) => {
+      if (child.isMesh) {
+        child.castShadow = true;
+        child.receiveShadow = true;
+        child.frustumCulled = false;
+        if (child.material) {
+          const mat = child.material.clone();
+          mat.envMapIntensity = 0.85;
+          mat.roughness = Math.min(mat.roughness ?? 0.75, 0.78);
+          mat.metalness = Math.min(mat.metalness ?? 0.08, 0.15);
+          $g(mat, {
+            key: "tripo-luffy-flying-pbr",
+            uniforms,
+            vertex: (e) => (
+              (e = Q(e, "#include <common>", "varying vec3 vObjP;")),
+              Q(e, "#include <begin_vertex>", "vObjP = position;")
+            ),
+            fragment: (e) => (
+              (e = Q(
+                e,
+                "#include <common>",
+                "uniform float uRim, uShade, uCharge, uChargeT, uNika; uniform vec3 uRimCol; uniform vec2 uYRange; varying vec3 vObjP;"
+              )),
+              (e = Q(
+                e,
+                "#include <color_fragment>",
+                "diffuseColor.rgb *= mix(0.35, 1.08, clamp(uShade, 0.0, 1.0));"
+              )),
+              Q(e, "#include <emissivemap_fragment>", `${LUFFY_EMISSIVE_PATCH}`)
+            ),
+          });
+          child.material = mat;
+        }
+      }
+    });
+
+    // Align the horizontal flying Tripo mesh (which faces +Z with dorsal/up along +Y)
+    // to the spline flight basis h.makeBasis(_, v, y) where local +Y is forward (v)
+    // and local -Z is dorsal/up (-y). Rotating X by -90 deg (-Math.PI / 2) maps:
+    //   mesh +Z (head/forward) -> local +Y (flight tangent v)
+    //   mesh +Y (dorsal/top)   -> local -Z (skyward up -y)
+    modelClone.rotation.set(-Math.PI / 2, 0, 0);
+    modelClone.scale.setScalar(1.95);
+    holder.add(modelClone);
+
+    state.model.add(holder);
+    state.tripoFlyingHolder = holder;
+    state.tripoFlyingMesh = modelClone;
+    state.baseMesh = baseMesh;
+    state.headAdapter = headAdapter;
+    state.chestAdapter = chestAdapter;
+  });
 }
 
 /**
