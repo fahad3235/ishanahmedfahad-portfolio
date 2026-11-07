@@ -1051,7 +1051,7 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
   if (!_eggTripoPromise) {
     _eggTripoPromise = new Promise((resolve) => {
       new Sv().setMeshoptDecoder(Sy).load(
-        "./models/luffy-egg.glb?v=4",
+        "./models/luffy-egg.glb?v=5",
         (gltf) => resolve(gltf),
         undefined,
         (err) => {
@@ -1065,7 +1065,7 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
   if (!state.skipTripo && !_flyingTripoPromise) {
     _flyingTripoPromise = new Promise((resolve) => {
       new Sv().setMeshoptDecoder(Sy).load(
-        "./models/luffy-flying.glb?v=4",
+        "./models/luffy-flying.glb?v=5",
         (fGltf) => resolve(fGltf),
         undefined,
         (err) => {
@@ -1223,7 +1223,7 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
     gltfLoader.setDRACOLoader(dracoLoader);
 
     gltfLoader.load(
-      "./models/luffy-ipu-fight.glb?v=4",
+      "./models/luffy-ipu-fight.glb?v=5",
       (gltf) => {
         if (!gltf || !gltf.scene) return;
         const fightGroup = new yr();
