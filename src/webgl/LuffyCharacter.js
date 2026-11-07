@@ -1070,15 +1070,18 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     const eggClone = prepareTripoClone(gltf, T, uniforms, "tripo-luffy-egg-pbr");
     eggClone.scale.setScalar(1.88);
     eggClone.position.set(0, 0.02, 0);
+    // Rotate around Y by -1.25 rad (-72 deg) so the mesh's face (+X, +Z) points directly toward local +Z (the camera during awakening)!
+    eggClone.rotation.set(0, -1.25, 0);
     eggHolder.add(eggClone);
 
     state.model.add(eggHolder);
     state.tripoEggHolder = eggHolder;
     state.tripoEggMesh = eggClone;
 
-    // Hide the procedural mannequin skin & duplicate hair/hat now that the Luffy GLB is ready
+    // Hide the procedural mannequin skin & duplicate hair/hat/cloud now that the Luffy GLB is ready
     if (baseMesh) baseMesh.visible = false;
     if (headAdapter) headAdapter.visible = false;
+    if (chestAdapter) chestAdapter.visible = false;
   });
 
   // 2. Flying Luffy GLB Model (active during 3D spline flight after awakening)
@@ -1108,6 +1111,7 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
 
     if (baseMesh) baseMesh.visible = false;
     if (headAdapter) headAdapter.visible = false;
+    if (chestAdapter) chestAdapter.visible = false;
   });
 }
 
