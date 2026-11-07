@@ -12,6 +12,39 @@
       content="Ishan Ahmed Fahad — Web Developer &amp; AI Systems Engineer, Department of CIS @ Daffodil International University. Lead Developer at Team Probaho (UPAY Sentinel AI - 2nd of 132 Teams National Runner-Up, SightGuide, Probaho Remit). 3D WebGL narrative portfolio."
     />
     <meta name="theme-color" content="#030203" />
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    <script>
+      (function () {
+        var BUILD_V = "v4";
+        try {
+          if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (regs) {
+              for (var i = 0; i < regs.length; i++) regs[i].unregister();
+            });
+          }
+          if ("caches" in window) {
+            caches.keys().then(function (keys) {
+              for (var i = 0; i < keys.length; i++) caches.delete(keys[i]);
+            });
+          }
+          var url = new URL(window.location.href);
+          var prevV = localStorage.getItem("iaf_portfolio_v");
+          if (prevV !== BUILD_V) {
+            localStorage.setItem("iaf_portfolio_v", BUILD_V);
+            if (url.searchParams.get("v") !== BUILD_V) {
+              url.searchParams.set("v", BUILD_V);
+              window.location.replace(url.toString());
+              return;
+            }
+          }
+          window.addEventListener("pageshow", function (ev) {
+            if (ev.persisted) window.location.reload();
+          });
+        } catch (e) {}
+      })();
+    </script>
     <link rel="stylesheet" href="./src/styles/main.css" />
   </head>
   <body>

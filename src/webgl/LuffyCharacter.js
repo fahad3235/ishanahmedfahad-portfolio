@@ -975,11 +975,10 @@ export function attachLuffyToSkeleton(T, bones, uniforms) {
     chestAdapter.add(cloudAndHaki);
   }
 
-  // 4. Load BOTH of the user's Tripo PBR 3D Luffy GLB models for the hero figure:
-  //    - ./models/luffy-egg.glb for the Chapter 04 Egg & Awakening sequence (fly <= 0.02)
-  //    - ./models/luffy-flying.glb for the 3D Spline Flight sequence after awakening (fly > 0.02)
-  //    Skip loading 3M-vertex GLBs on secondary chapter clones (state.skipTripo) to keep mobile GPU memory & FPS ultra-smooth!
-  if (T.Sv && T.Sy && T.state && !T.state.skipTripo) {
+  // 4. Load BOTH of the user's Tripo PBR 3D Luffy GLB models:
+  //    - ./models/luffy-egg.glb?v=4 for the Chapter 04 Egg & Awakening sequence (fly <= 0.02) and Chapter 02 Memory
+  //    - ./models/luffy-flying.glb?v=4 for the 3D Spline Flight sequence after awakening (fly > 0.02)
+  if (T.Sv && T.Sy && T.state) {
     loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter);
   }
 }
@@ -1037,10 +1036,22 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
   state.headAdapter = headAdapter;
   state.chestAdapter = chestAdapter;
 
+  // Immediately hide the legacy procedural mannequin & adapters so neither mobile nor desktop
+  // ever shows the previous fallback model while the GLB assets initialize!
+  if (baseMesh) baseMesh.visible = false;
+  if (headAdapter) headAdapter.visible = false;
+  if (chestAdapter) chestAdapter.visible = false;
+  if (state.eyes) {
+    for (const eye of state.eyes) eye.visible = false;
+  }
+  if (state.halos) {
+    for (const halo of state.halos) halo.visible = false;
+  }
+
   if (!_eggTripoPromise) {
     _eggTripoPromise = new Promise((resolve) => {
       new Sv().setMeshoptDecoder(Sy).load(
-        "./models/luffy-egg.glb",
+        "./models/luffy-egg.glb?v=4",
         (gltf) => resolve(gltf),
         undefined,
         (err) => {
@@ -1051,8 +1062,22 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     });
   }
 
+  if (!state.skipTripo && !_flyingTripoPromise) {
+    _flyingTripoPromise = new Promise((resolve) => {
+      new Sv().setMeshoptDecoder(Sy).load(
+        "./models/luffy-flying.glb?v=4",
+        (fGltf) => resolve(fGltf),
+        undefined,
+        (err) => {
+          console.warn("[luffy-flying] failed to load GLB:", err);
+          resolve(null);
+        }
+      );
+    });
+  }
+
   // 1. Egg & Awakening Luffy GLB Model (active in egg & awakening before spline flight)
-  _eggTripoPromise.then((gltf) => {
+  const eggSetupPromise = _eggTripoPromise.then((gltf) => {
     if (!gltf || !gltf.scene || !state || !state.model) return;
     const eggHolder = new yr();
     eggHolder.name = "tripo-luffy-egg-holder";
@@ -1067,51 +1092,39 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     state.tripoEggHolder = eggHolder;
     state.tripoEggMesh = eggClone;
 
-    // Hide the procedural mannequin skin & duplicate hair/hat/cloud now that the Luffy GLB is ready
     if (baseMesh) baseMesh.visible = false;
     if (headAdapter) headAdapter.visible = false;
     if (chestAdapter) chestAdapter.visible = false;
-
-    // 2. Stagger-load the Flying Luffy GLB Model right after the Egg GLB finishes (or immediately on desktop)
-    //    so mobile browsers never decode two 18MB GLBs simultaneously!
-    if (!_flyingTripoPromise) {
-      _flyingTripoPromise = new Promise((resolve) => {
-        new Sv().setMeshoptDecoder(Sy).load(
-          "./models/luffy-flying.glb",
-          (fGltf) => resolve(fGltf),
-          undefined,
-          (err) => {
-            console.warn("[luffy-flying] failed to load GLB:", err);
-            resolve(null);
-          }
-        );
-      });
-    }
-
-    _flyingTripoPromise.then((fGltf) => {
-      if (!fGltf || !fGltf.scene || !state || !state.model) return;
-      const flyHolder = new yr();
-      flyHolder.name = "tripo-luffy-flying-holder";
-      flyHolder.visible = false;
-      const flyClone = prepareTripoClone(fGltf, T, uniforms, "tripo-luffy-flying-pbr");
-
-      const pitchGroup = new yr();
-      pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
-      flyClone.rotation.set(0, 0, -1.72);
-      flyClone.scale.setScalar(1.95);
-      pitchGroup.add(flyClone);
-      flyHolder.add(pitchGroup);
-
-      state.model.add(flyHolder);
-      state.tripoFlyingHolder = flyHolder;
-      state.tripoFlyingPitch = pitchGroup;
-      state.tripoFlyingMesh = flyClone;
-
-      if (baseMesh) baseMesh.visible = false;
-      if (headAdapter) headAdapter.visible = false;
-      if (chestAdapter) chestAdapter.visible = false;
-    });
   });
+
+  // 2. Parallel-load the Flying Luffy GLB Model for the hero figure
+  const flyingSetupPromise = state.skipTripo
+    ? Promise.resolve()
+    : _flyingTripoPromise.then((fGltf) => {
+        if (!fGltf || !fGltf.scene || !state || !state.model) return;
+        const flyHolder = new yr();
+        flyHolder.name = "tripo-luffy-flying-holder";
+        flyHolder.visible = false;
+        const flyClone = prepareTripoClone(fGltf, T, uniforms, "tripo-luffy-flying-pbr");
+
+        const pitchGroup = new yr();
+        pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
+        flyClone.rotation.set(0, 0, -1.72);
+        flyClone.scale.setScalar(1.95);
+        pitchGroup.add(flyClone);
+        flyHolder.add(pitchGroup);
+
+        state.model.add(flyHolder);
+        state.tripoFlyingHolder = flyHolder;
+        state.tripoFlyingPitch = pitchGroup;
+        state.tripoFlyingMesh = flyClone;
+
+        if (baseMesh) baseMesh.visible = false;
+        if (headAdapter) headAdapter.visible = false;
+        if (chestAdapter) chestAdapter.visible = false;
+      });
+
+  state.tripoReadyPromise = Promise.all([eggSetupPromise, flyingSetupPromise]);
 }
 
 /**
@@ -1210,7 +1223,7 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
     gltfLoader.setDRACOLoader(dracoLoader);
 
     gltfLoader.load(
-      "./models/luffy-ipu-fight.glb",
+      "./models/luffy-ipu-fight.glb?v=4",
       (gltf) => {
         if (!gltf || !gltf.scene) return;
         const fightGroup = new yr();
@@ -1259,6 +1272,6 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
         console.warn("[luffy-ipu-fight] failed to load GLB:", err);
       }
     );
-    }, isMobile ? 1200 : 100);
+    }, 80);
   }
 }
