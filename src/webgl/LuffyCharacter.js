@@ -974,17 +974,79 @@ export function attachLuffyToSkeleton(T, bones, uniforms) {
     chestAdapter.add(cloudAndHaki);
   }
 
-  // 4. Load the user's flying Tripo PBR 3D Luffy model (./models/luffy-flying.glb)
-  //    so after awakening, Luffy flies along the 3D spline line with this model!
+  // 4. Load BOTH of the user's Tripo PBR 3D Luffy GLB models:
+  //    - ./models/luffy-egg.glb for the Chapter 04 Egg & Awakening sequence (fly <= 0.02)
+  //    - ./models/luffy-flying.glb for the 3D Spline Flight sequence after awakening (fly > 0.02)
   if (T.Sv && T.Sy && T.state) {
-    loadFlyingTripoLuffy(T, uniforms, headAdapter, chestAdapter);
+    loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter);
   }
 }
 
+let _eggTripoPromise = null;
 let _flyingTripoPromise = null;
 
-function loadFlyingTripoLuffy(T, uniforms, headAdapter, chestAdapter) {
-  const { yr, Sv, Sy, $g, Q, baseMesh, state } = T;
+function prepareTripoClone(gltf, T, uniforms, keyName) {
+  const { $g, Q } = T;
+  const modelClone = gltf.scene.clone(true);
+  modelClone.traverse((child) => {
+    if (child.isMesh) {
+      child.castShadow = true;
+      child.receiveShadow = true;
+      child.frustumCulled = false;
+      if (child.material) {
+        const mat = child.material.clone();
+        mat.envMapIntensity = 0.85;
+        mat.roughness = Math.min(mat.roughness ?? 0.75, 0.78);
+        mat.metalness = Math.min(mat.metalness ?? 0.08, 0.15);
+        $g(mat, {
+          key: keyName,
+          uniforms,
+          vertex: (e) => (
+            (e = Q(e, "#include <common>", "varying vec3 vObjP;")),
+            Q(e, "#include <begin_vertex>", "vObjP = position;")
+          ),
+          fragment: (e) => (
+            (e = Q(
+              e,
+              "#include <common>",
+              "uniform float uRim, uShade, uCharge, uChargeT, uNika; uniform vec3 uRimCol; uniform vec2 uYRange; varying vec3 vObjP;"
+            )),
+            (e = Q(
+              e,
+              "#include <color_fragment>",
+              "diffuseColor.rgb *= mix(0.35, 1.08, clamp(uShade, 0.0, 1.0));"
+            )),
+            Q(e, "#include <emissivemap_fragment>", `${LUFFY_EMISSIVE_PATCH}`)
+          ),
+        });
+        child.material = mat;
+      }
+    }
+  });
+  return modelClone;
+}
+
+function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
+  const { yr, Sv, Sy, baseMesh, state } = T;
+
+  state.baseMesh = baseMesh;
+  state.headAdapter = headAdapter;
+  state.chestAdapter = chestAdapter;
+
+  if (!_eggTripoPromise) {
+    _eggTripoPromise = new Promise((resolve) => {
+      new Sv().setMeshoptDecoder(Sy).load(
+        "./models/luffy-egg.glb",
+        (gltf) => resolve(gltf),
+        undefined,
+        (err) => {
+          console.warn("[luffy-egg] failed to load GLB:", err);
+          resolve(null);
+        }
+      );
+    });
+  }
+
   if (!_flyingTripoPromise) {
     _flyingTripoPromise = new Promise((resolve) => {
       new Sv().setMeshoptDecoder(Sy).load(
@@ -999,64 +1061,44 @@ function loadFlyingTripoLuffy(T, uniforms, headAdapter, chestAdapter) {
     });
   }
 
+  // 1. Egg & Awakening Luffy GLB Model (active in egg & awakening before spline flight, and in chapter slots)
+  _eggTripoPromise.then((gltf) => {
+    if (!gltf || !gltf.scene || !state || !state.model) return;
+    const eggHolder = new yr();
+    eggHolder.name = "tripo-luffy-egg-holder";
+    const eggClone = prepareTripoClone(gltf, T, uniforms, "tripo-luffy-egg-pbr");
+    eggClone.scale.setScalar(1.88);
+    eggClone.position.set(0, 0.02, 0);
+    eggHolder.add(eggClone);
+
+    state.model.add(eggHolder);
+    state.tripoEggHolder = eggHolder;
+    state.tripoEggMesh = eggClone;
+
+    // Hide the procedural mannequin skin & duplicate hair/hat now that the Luffy GLB is ready
+    if (baseMesh) baseMesh.visible = false;
+    if (headAdapter) headAdapter.visible = false;
+  });
+
+  // 2. Flying Luffy GLB Model (active during 3D spline flight after awakening)
   _flyingTripoPromise.then((gltf) => {
     if (!gltf || !gltf.scene || !state || !state.model) return;
-    const holder = new yr();
-    holder.name = "tripo-luffy-flying-holder";
-    holder.visible = false; // Activated after awakening when Luffy flies along the line!
+    const flyHolder = new yr();
+    flyHolder.name = "tripo-luffy-flying-holder";
+    flyHolder.visible = false;
+    const flyClone = prepareTripoClone(gltf, T, uniforms, "tripo-luffy-flying-pbr");
 
-    const modelClone = gltf.scene.clone(true);
-    modelClone.traverse((child) => {
-      if (child.isMesh) {
-        child.castShadow = true;
-        child.receiveShadow = true;
-        child.frustumCulled = false;
-        if (child.material) {
-          const mat = child.material.clone();
-          mat.envMapIntensity = 0.85;
-          mat.roughness = Math.min(mat.roughness ?? 0.75, 0.78);
-          mat.metalness = Math.min(mat.metalness ?? 0.08, 0.15);
-          $g(mat, {
-            key: "tripo-luffy-flying-pbr",
-            uniforms,
-            vertex: (e) => (
-              (e = Q(e, "#include <common>", "varying vec3 vObjP;")),
-              Q(e, "#include <begin_vertex>", "vObjP = position;")
-            ),
-            fragment: (e) => (
-              (e = Q(
-                e,
-                "#include <common>",
-                "uniform float uRim, uShade, uCharge, uChargeT, uNika; uniform vec3 uRimCol; uniform vec2 uYRange; varying vec3 vObjP;"
-              )),
-              (e = Q(
-                e,
-                "#include <color_fragment>",
-                "diffuseColor.rgb *= mix(0.35, 1.08, clamp(uShade, 0.0, 1.0));"
-              )),
-              Q(e, "#include <emissivemap_fragment>", `${LUFFY_EMISSIVE_PATCH}`)
-            ),
-          });
-          child.material = mat;
-        }
-      }
-    });
+    // Align horizontal flying mesh (+Z forward, +Y dorsal) with spline flight basis (+Y forward, -Z dorsal)
+    flyClone.rotation.set(-Math.PI / 2, 0, 0);
+    flyClone.scale.setScalar(1.95);
+    flyHolder.add(flyClone);
 
-    // Align the horizontal flying Tripo mesh (which faces +Z with dorsal/up along +Y)
-    // to the spline flight basis h.makeBasis(_, v, y) where local +Y is forward (v)
-    // and local -Z is dorsal/up (-y). Rotating X by -90 deg (-Math.PI / 2) maps:
-    //   mesh +Z (head/forward) -> local +Y (flight tangent v)
-    //   mesh +Y (dorsal/top)   -> local -Z (skyward up -y)
-    modelClone.rotation.set(-Math.PI / 2, 0, 0);
-    modelClone.scale.setScalar(1.95);
-    holder.add(modelClone);
+    state.model.add(flyHolder);
+    state.tripoFlyingHolder = flyHolder;
+    state.tripoFlyingMesh = flyClone;
 
-    state.model.add(holder);
-    state.tripoFlyingHolder = holder;
-    state.tripoFlyingMesh = modelClone;
-    state.baseMesh = baseMesh;
-    state.headAdapter = headAdapter;
-    state.chestAdapter = chestAdapter;
+    if (baseMesh) baseMesh.visible = false;
+    if (headAdapter) headAdapter.visible = false;
   });
 }
 
