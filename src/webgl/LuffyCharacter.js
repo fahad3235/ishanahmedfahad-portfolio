@@ -3,6 +3,7 @@
 // with spiral tips & crimson-dark Haki shading, spiral-curled white eyebrows, furrowed brow lines,
 // wide ringed Nika eyes, ear-to-ear toothy grin, stitched left-eye scar, white cloud-lapel vest,
 // thick crimson-illuminated Hagoromo cloud scarf with spiral volutes, and jagged black-crimson Haki lightning).
+import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader.js";
 import { installSunkenPirateShip } from "./PirateShip.js";
 export { installSunkenPirateShip } from "./PirateShip.js";
 
@@ -1148,12 +1149,11 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
     });
   }
 
-  // 2. Chapters 01, 02, 05, 06: Clone the rigged 3D Gear 5 Nika Luffy figure into the chapter slots!
+  // 2. Chapter 02 (Memory): Clone the 3D Luffy figure into the person slot
   if (heroFigure && heroFigure.ready) {
     heroFigure.ready.then(() => {
       const slotConfigs = [
         { chapIdx: 1, slotName: "person", scale: 0.95, rotY: 0.25, awake: 1.0, fly: 0 },
-        { chapIdx: 5, slotName: "figure", scale: 1.0, rotY: -0.4, awake: 1.0, fly: 0 },
       ];
       for (const cfg of slotConfigs) {
         const chap = chapters[cfg.chapIdx];
@@ -1182,5 +1182,69 @@ export function installChapterLuffyPresence(T, chapters, heroFigure) {
         });
       }
     });
+  }
+
+  // 3. Chapter 06 (Network / Red Circular Platform):
+  //    Load the user's 3D Luffy & Ipu Fighting diorama (./models/luffy-ipu-fight.glb)
+  //    right onto the red circular platform where the glowing red thread coils!
+  const netChap = chapters[5];
+  if (netChap && T.Sv) {
+    const fightSlot = (netChap.slots && netChap.slots.figure) || netChap.group;
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath("./draco/");
+    const gltfLoader = new T.Sv();
+    if (T.Sy) gltfLoader.setMeshoptDecoder(T.Sy);
+    gltfLoader.setDRACOLoader(dracoLoader);
+
+    gltfLoader.load(
+      "./models/luffy-ipu-fight.glb",
+      (gltf) => {
+        if (!gltf || !gltf.scene) return;
+        const fightGroup = new yr();
+        fightGroup.name = "luffy-ipu-fighting-diorama";
+
+        const fightScene = prepareTripoClone(
+          gltf,
+          T,
+          sharedUniforms,
+          "tripo-luffy-ipu-fight-pbr"
+        );
+
+        // Model bounds: y in [-0.307, 0.223] (height ~0.53), z in [-0.49, 0.49] (span ~0.98)
+        // Scale by 3.65 so the battle diorama stands ~1.95m tall and spans ~3.6m across the platform!
+        const fightScale = 3.65;
+        fightScene.scale.setScalar(fightScale);
+        // Lift by 0.307 * 3.65 = 1.12m so their feet/base rest cleanly on the platform surface (y = 0)
+        fightScene.position.set(0, 0.307 * fightScale, 0);
+        // Orient the clash so both fighters are framed in 3/4 profile toward the approaching camera
+        fightScene.rotation.y = 0.65;
+        fightGroup.add(fightScene);
+
+        // Add Conqueror's Haki lightning & cloud aura beneath/around the clash
+        const clashAura = createNikaCloudAndHakiGroup(T, sharedUniforms);
+        clashAura.position.set(0, 0.45, 0);
+        clashAura.scale.setScalar(2.4);
+        fightGroup.add(clashAura);
+
+        // Hide any placeholder capsule inside the figure slot
+        fightSlot.traverse((c) => {
+          if (c !== fightSlot && c.isMesh) c.visible = false;
+        });
+
+        fightSlot.add(fightGroup);
+
+        netChap.onUpdate(({ t, input }) => {
+          sharedUniforms.uChargeT.value = t;
+          // Subtle dynamic combat vibration / energy pulse & interactive parallax
+          const clashPulse = Math.sin(t * 14.0) * 0.008 + Math.sin(t * 2.2) * 0.03;
+          fightGroup.position.y = clashPulse;
+          fightGroup.rotation.y = 0.25 + Math.sin(t * 0.6) * 0.08 + (input && input.ndc ? input.ndc.x * 0.12 : 0);
+        });
+      },
+      undefined,
+      (err) => {
+        console.warn("[luffy-ipu-fight] failed to load GLB:", err);
+      }
+    );
   }
 }
