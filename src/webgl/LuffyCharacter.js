@@ -1090,17 +1090,13 @@ function loadDualTripoLuffyModels(T, uniforms, headAdapter, chestAdapter) {
     const flyClone = prepareTripoClone(gltf, T, uniforms, "tripo-luffy-flying-pbr");
 
     // Align horizontal flying mesh (+Z forward, +Y dorsal, face/chest normal pointing toward +X)
-    // with spline flight basis (+Y forward, -Z dorsal, camera viewing from -X/+Z side)
+    // with spline flight basis (+Y forward, -Z dorsal).
     const pitchGroup = new yr();
     pitchGroup.rotation.set(-Math.PI / 2, 0, 0);
-    // Roll around the mesh's longitudinal +Z axis so Luffy's face (+X, +Y_norm) turns directly toward the camera!
-    flyClone.rotation.set(0, 0, -2.18);
+    // Keep Luffy upright (back/hair on top, fist extended forward) with a subtle heroic angle
+    // so his face (+X, +Z) and chest are visible while his body stays right-side-up!
+    flyClone.rotation.set(-0.14, 0.38, -0.32);
     flyClone.scale.setScalar(1.95);
-    // Attach Conqueror's Haki lightning bolts aligned with the horizontal flight trajectory
-    const flyAura = createNikaCloudAndHakiGroup(T, uniforms);
-    flyAura.rotation.set(-Math.PI / 2, 0, 0);
-    flyAura.scale.setScalar(1.35);
-    flyHolder.add(flyAura);
     pitchGroup.add(flyClone);
     flyHolder.add(pitchGroup);
 
